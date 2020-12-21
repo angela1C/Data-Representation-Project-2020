@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search Tags</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="index.html">OpenData</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="searchTags.html">Search Tags</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="getAllTags.html">Tags</a>
+                  </li>
+                  
+
+                
+                
+                  
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+
+
+<div class="container">
+
+
+    <div id='findTagForm' style="display: block">
+        <h3><span id="createLabel">Find a Tag</span></h3>
+        <input type="hidden" name="id"/>
+        Tag <input type="text" name="Tag_Name" /><br/>
+        Id <input type="text" name="Tag_Id"/> <br/>
+       <p>Call the getAllTagsAjax  <span><button id="getTagsByCharButton" onclick="getTagsByCharAjax()">getTagsByChar</button></span></p> 
+       <p>Call the getTagsById  <span><button id="getTagByIdButton" onclick="getTagByIdAjax()">getTagById</button></span></p>
+       
+       
+    </div>
+
+    <div id="search-tag" style="display:hide  ">
+
+        <div class="table-responsive .table-striped">
+            <table id="tagIdTable" class=" table table-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Tag_id</th><th>Tag</th>
+                </tr>
+                </thead>
+                
+            </table>
+        </div>     
+        
+
+              
+    
+</div>    
+
+
+    </div>
+    
+    </body>
+    <script>
+
+// get tag entered on the form, either by tag id or tag name
+    function getTagFromForm(){
+    var form = document.getElementById('findTagForm')
+    var tag = {}
+    tag.id = form.querySelector('input[name="id"]').value
+    tag.Tag_id = form.querySelector('input[name="Tag_Id"]').value
+    tag.Tag_Name = form.querySelector('input[name="Tag_Name"]').value + "%"
+    
+    console.log(JSON.stringify(tag))
+    return tag
+    }
+
+
+    
+
+    function getAllTagsAjax(){
+            host = window.location.origin
+            $.ajax({
+                "url": host+"/tags",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    console.log(result);
+                    for (tag of result){
+                        addTagToTable(tag)
+                    }
+                    
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+    
+    function addTagToTable1(tag){
+        var tableElement = document.getElementById('tagIdTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id',tag.tag_id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = tag.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = tag.tag_name
+        }
+
+        
+   
+
+        function getTagByIdAjax(id){
+            host = window.location.origin
+            id = getTagFromForm().Tag_id
+            $.ajax({
+                "url": host+"/tags/" + encodeURI(id),
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    console.log(result);
+                    // 
+                    addTagToTable1(result)
+                                        
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        function getTagsByCharAjax(char){
+            host = window.location.origin
+            char = getTagFromForm().Tag_Name
+            $.ajax({
+                //"url": host+"/tags/" + "%" + encodeURI(char),
+                "url": host+"/tags/"  + encodeURI(char),
+                
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    console.log("testing get tag by char");
+                    console.log(result)
+                    for (tag of result){
+                        addTagToTable1(tag)
+                    }
+                    
+                  
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        
+    //getTagByIdAjax();
+    </script>
+</html>

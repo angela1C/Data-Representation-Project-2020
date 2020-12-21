@@ -16,9 +16,9 @@ Here I am copying just the relevant files for the project from my other folder.
 
 - `python -m venv venv`
 
-- `pip install -r requirements.txt` to load a file of packages. I don't need to do this everytime once the virtual environment has been created
-
 - `source venv/bin/activate`
+
+- `pip install -r requirements.txt` to load a file of packages. I don't need to do this everytime once the virtual environment has been created
 
 - `export FLASK_APP=application`
 
@@ -33,7 +33,7 @@ These are the instructions I used for first getting it up and running.
 On the command line terminal:
 
 - `mkdir webApp`
-- `cd webApp`
+- `cd webApp` - I am moving the main files back out of webapp directory
 - `touch .gitignore`
 - `echo /venv > .gitignore`
 - `touch README.md`
