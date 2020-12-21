@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>
+            test get all datasets
+        </title>
+    </head>
+    <body>
+
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">OpenData</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchTags.html">Search Tags</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="getAllTags.html">Tags</a>
+                  </li>
+                  
+
+                
+                
+                  
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+
+
+    <div class="container">
+
+      <div id='findDatasetForm' style="display: block    ">
+        <h4><span id="createLabel">Search for dataset using tag</span></h4>
+        <input type="hidden" name="id"/>
+        Tag <input type="text" name="Tag_Name" /><br/>
+        Id <input type="text" name="Tag_Id"/> <br/>
+       <p>Call the getAllTagsAjax  <span><button id="getTagsByCharButton" onclick="getTagsByCharAjax()">getTagsByChar</button></span></p> 
+       <p>Call the getTagsById  <span><button id="getTagByIdButton" onclick="getTagByIdAjax()">getTagById</button></span></p>
+       
+       
+    </div>
+
+
+        <button onclick="getAllAjax()">getAllDatasets (100)</button>
+        <div id="output"></div>
+        <table id="DatasetTable" class="table">
+            <tr>
+                <th>Id</th><th>Dataset</th>>
+            </tr>
+        </table>
+
+    </div>
+    </body>
+    <script>
+        function getAllAjax(){
+            host = window.location.origin
+            $.ajax({
+                "url": host+"/datasets",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    console.log(result);
+                    for (dataset of result){
+                        addDatasetToTable(dataset)
+                    }
+                    
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        function addDatasetToTable(dataset){
+            var tableElement = document.getElementById('DatasetTable')
+            var rowElement = tableElement.insertRow(-1)
+            rowElement.setAttribute('id',dataset.id)
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = dataset.id
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = dataset.dataset_name
+        }
+        
+//getAllAjax();
+    </script>
+</html>

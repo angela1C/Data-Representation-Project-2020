@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>
+            test get all tags
+        </title>
+    </head>
+    <body>
+
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                  <a class="navbar-brand" href="#">OpenData</a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                      <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="getAllTags.html">Tags</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="getAllOrgs.html">Orgs</a>
+                      </li>
+    
+                      <li class="nav-item">
+                        <a class="nav-link" href="search.html">Search</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Dropdown link
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <li><a class="dropdown-item" href="#">Action</a></li>
+                          <li><a class="dropdown-item" href="#">Another action</a></li>
+                          <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </div>
+
+    <div class="container">       
+        <button onclick="getAllAjax()">getAllTags</button>
+        <div id="output"></div>
+        <table id="tagTable" class="table">
+            <tr>
+                <th>Tag_id</th><th>Tag</th>>
+            </tr>
+        </table>
+
+    </div> 
+    </body>
+    <script>
+        function getAllAjax(){
+            host = window.location.origin
+            $.ajax({
+                "url": host+"/tags",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    console.log(result);
+                    for (tag of result){
+                        addTagToTable(tag)
+                    }
+                    
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        function addTagToTable(tag){
+            var tableElement = document.getElementById('tagTable')
+            var rowElement = tableElement.insertRow(-1)
+            rowElement.setAttribute('id',tag.tag_id)
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = tag.id
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = tag.tag_name
+        }
+        
+getAllAjax();
+    </script>
+</html>
