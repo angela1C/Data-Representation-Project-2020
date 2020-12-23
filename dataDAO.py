@@ -7,28 +7,37 @@ import json
 import sys
 
 class DataDAO:
-    # create a variable to store the database connections
-    db = ""
 
-    def __init__(self):
-    # init is called when the construction function here is called.
-        
-        # connect to the database
-        # if doing this in a production server, use a connection pool and don't hardcode in the parameters
-        # which change from machine to machine, use a configuration file
-        self.db = mysql.connector.connect(
-            host = cfg.mysql['host'],
-            user = cfg.mysql['user'],
-            password = cfg.mysql['password'],
-            database = cfg.mysql['db']
+
+    def initConnectToDB(self):
+        db = mysql.connector.connect(
+            host=       cfg.mysql['host'],
+            user=       cfg.mysql['user'],
+            password=   cfg.mysql['password'],
+            database=   cfg.mysql['db'],
+            pool_name='my_connection_pool',
+            pool_size=10
         )
+        return db
+
+    def getConnection(self):
+        db = mysql.connector.connect(
+            pool_name='my_connection_pool'
+        )
+        return db
+
+    def __init__(self): 
+        db=self.initConnectToDB()
+        db.close()
         print("connection made")
+
 
 ## ************************** PART 1 ***********************************************
 ##   ***************************
     # @app.route('/datasets/')
     def getAllDatasets(self):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql =  'select * from dataset_list;'
         cursor.execute(sql,)
         # returns tuples, need to convert into dict objects for json later on
@@ -43,27 +52,29 @@ class DataDAO:
 
     # @app.route('/datasets/<string:query>')  
     def findDatasets(self, query):
-            cursor = self.db.cursor(dictionary=True)
-            sql = "select * from dataset_list where package_name like %s"
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
+        sql = "select * from dataset_list where package_name like %s"
             # 
-            values = (query +"%",) 
+        values = (query +"%",) 
             # convert to a tuple 
-            values = tuple(values,)
+        values = tuple(values,)
             
-            cursor.execute(sql, values)
-            results = cursor.fetchall()
-            returnArray = []
-            for result in results:
-                returnArray.append(result)            
+        cursor.execute(sql, values)
+        results = cursor.fetchall()
+        returnArray = []
+        for result in results:
+            returnArray.append(result)            
             
-            cursor.close()
-            print(returnArray)
-            return returnArray
+        cursor.close()
+        print(returnArray)
+        return returnArray
 
 
     # @app.route('/datasets/<int:id>')
     def findDatasetById(self, id):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "select * from dataset_list where id = %s"
         values = (id,)
         cursor.execute(sql, values)
@@ -74,21 +85,23 @@ class DataDAO:
 
     # @app.route('/tags')
     def getAllTags(self):
-            cursor = self.db.cursor()
-            sql =  'select * from tag_list;'
-            cursor.execute(sql)
-            results = cursor.fetchall()
-            returnArray = []
-            print(results)
+        db = self.getConnection()
+        cursor = db.cursor()
+        sql =  'select * from tag_list;'
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        returnArray = []
+        print(results)
             # returns tuples, need to convert into dict objects for json later on
-            for result in results:
-                returnArray.append(self.convertToDictionaryT(result))   
-            cursor.close()  
-            return returnArray 
+        for result in results:
+            returnArray.append(self.convertToDictionaryT(result))   
+        cursor.close()  
+        return returnArray 
 
     # @app.route('/tags/<int:id>')
     def findTagById(self, id):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "select * from tag_list where tag_id = %s"
         values = (id,)
         cursor.execute(sql, values)
@@ -99,7 +112,8 @@ class DataDAO:
 
     # @app.route('/tags/<string:char>')
     def findTagByChar(self, char):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql="select * from tag_list where tag like %s;"
         values = (char,)
         cursor.execute(sql, values)
@@ -124,21 +138,23 @@ class DataDAO:
 
     # @app.route('/orgs')
     def getAllOrgs(self):
-            cursor = self.db.cursor(dictionary=True)
-            sql =  'select * from org_list;'
-            cursor.execute(sql)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
+        sql =  'select * from org_list;'
+        cursor.execute(sql)
             # returns tuples, need to convert into dict objects for json later on
-            results = cursor.fetchall()
-            returnArray = []
+        results = cursor.fetchall()
+        returnArray = []
             #print(results)
-            for result in results:
-                returnArray.append(result)   
-            cursor.close()  
-            return returnArray 
+        for result in results:
+            returnArray.append(result)   
+        cursor.close()  
+        return returnArray 
 
     # @app.route('/orgs/<int:id>')
     def findOrgById(self, id):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "select * from org_list where org_id = %s"
         values = (id,)
         cursor.execute(sql, values)
@@ -148,22 +164,23 @@ class DataDAO:
 
     # @app.route('/orgs/<string:query>')
     def findOrgs(self, query):
-            cursor = self.db.cursor(dictionary=True)
-            sql = "select * from org_list where organization like %s"
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
+        sql = "select * from org_list where organization like %s"
             # 
-            values = (query +"%",) 
+        values = (query +"%",) 
             # convert to a tuple 
-            values = tuple(values,)
+        values = tuple(values,)
             
-            cursor.execute(sql, values)
-            results = cursor.fetchall()
-            returnArray = []
-            for result in results:
-                returnArray.append(result)            
+        cursor.execute(sql, values)
+        results = cursor.fetchall()
+        returnArray = []
+        for result in results:
+            returnArray.append(result)            
             
-            cursor.close()
-            print(returnArray)
-            return returnArray
+        cursor.close()
+        print(returnArray)
+        return returnArray
 
 
 
@@ -182,8 +199,9 @@ class DataDAO:
 
     # @app.route('/datasetUrls')
     def getDatasetUrls(self):
+        db = self.getConnection()
         # https://stackoverflow.com/questions/43796423/python-converting-mysql-query-result-to-json
-        cursor = self.db.cursor(dictionary=True)
+        cursor = db.cursor(dictionary=True)
         sql = "select * from datasets where format in ('csv','json')"
         cursor.execute(sql,)
         
@@ -197,8 +215,9 @@ class DataDAO:
 
     # @app.route ('/dataset_resources)
     def getAllResources(self):
+        db = self.getConnection()
         # https://stackoverflow.com/questions/43796423/python-converting-mysql-query-result-to-json
-        cursor = self.db.cursor(dictionary=True)
+        cursor = db.cursor(dictionary=True)
         sql = "select * from datasets"
     
         #sql = "select * from datasets"
@@ -213,7 +232,8 @@ class DataDAO:
 
     # @app.route('/myresources/<string:id>', methods=['GET','PUT','DELETE'])
     def findResourceById(self,id):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "select * from datasets where id= %s"
         values = (id,)
         cursor.execute(sql, values)
@@ -225,7 +245,8 @@ class DataDAO:
 
     # @app.route('/dataset_resources_query/<string:query>')
     def findADataset(self, query):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "select * from datasets where name like %s"
         # 
         values = (query +"%",) 
@@ -245,7 +266,8 @@ class DataDAO:
 
     # @app.route('/deleteresources/<string:id>', methods=['DELETE'])
     def deleteResource(self, id):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "delete from datasets where id= %s" 
         values = (id,)
         cursor.execute(sql, values)
@@ -256,7 +278,8 @@ class DataDAO:
 
     # want to update a row in the table
     def updateResource(self,values):
-        cursor = self.db.cursor(dictionary=True)
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
         sql = "update datasets set description =%s where id = %s"
         #values=("testing update from python",id,)
         cursor.execute(sql, values)

@@ -53,3 +53,8 @@ The requirements.txt file contains the requirements including `requests` and `py
 ## Python Anywhere
 
 mkvirtualenv --python=/usr/bin/python3.8 venv
+
+I managed to get it hosted on Pythonanywhere. It read in the data from the open data portal api organization_load successfully but after that I got server errors.
+The log says: mysql.connector.errors.OperationalError: MySQL Connection not available.
+
+So I will come back and do connection pooling
