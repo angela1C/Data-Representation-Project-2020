@@ -7,6 +7,32 @@ import json
 import sys
 
 class OpenDAO:
+    def initConnectToDB(self):
+        db = mysql.connector.connect(
+            host=       cfg.mysql['host'],
+            user=       cfg.mysql['user'],
+            password=   cfg.mysql['password'],
+            database=   cfg.mysql['db'],
+            pool_name='my_connection_pool',
+            pool_size=10
+        )
+        return db
+
+    def getConnection(self):
+        db = mysql.connector.connect(
+            pool_name='my_connection_pool'
+        )
+        return db
+
+    def __init__(self): 
+        db=self.initConnectToDB()
+        self.url = 'https://data.gov.ie/api/3/action/' 
+        db.close()
+        print("connection made")
+
+
+
+
     # create a variable to store the database connections
     db = ""
 
@@ -25,28 +51,32 @@ class OpenDAO:
 
     # clear the tables of all data
     def truncateOrgsTable(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql ="truncate table org_list"
         cursor.execute(sql)
         self.db.commit()
         #cursor.close()
 
     def truncateDatasetsTable(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql ="truncate table dataset_list"
         cursor.execute(sql)
         self.db.commit()
         #cursor.close()
 
     def truncateTagsTable(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql ="truncate table tag_list"
         cursor.execute(sql)
         self.db.commit()
         #cursor.close()
 
     def truncateDatasets(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql ="truncate table datasets"
         cursor.execute(sql)
         self.db.commit()
@@ -55,10 +85,11 @@ class OpenDAO:
 
 
     def loadOrgsTable(self, action='organization_list'):
+        db = self.getConnection()
         self.action = action
         self.response = requests.get(self.url+action)
         data = self.response.json()
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         for result in data['result']:
 
             value = "('" + result + "',)" 
@@ -71,10 +102,11 @@ class OpenDAO:
 
 
     def loadTagsTable(self, action='tag_list'):
+        db = self.getConnection()
         self.action = action
         self.response = requests.get(self.url+action)
         data = self.response.json()
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         for result in data['result']:
 
             value = "('" + result + "',)" 
@@ -86,10 +118,11 @@ class OpenDAO:
         cursor.close()    
 
     def loadDatasetsTable(self, action='package_list'):
+        db = self.getConnection()
         self.action = action
         self.response = requests.get(self.url+action)
         data = self.response.json()
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         for result in data['result']:
 
             value = "('" + result + "',)" 
@@ -115,13 +148,14 @@ class OpenDAO:
 
     query = {'q':'phone'}
     #def datasetSearch(self,action ="package_search", params={'q': 'accidents' }):
-    def datasetSearch(self,action ="package_search", params=query):    
+    def datasetSearch(self,action ="package_search", params=query):  
+        db = self.getConnection()  
         #params= {'q': 'accidents' } 
         self.action = action
         
         self.response = requests.get(self.url+action,params)
         data = self.response.json()
-        cursor = self.db.cursor()
+        cursor = db.cursor()
 
         for result in data["result"]["results"]:
             resources = result['resources']
