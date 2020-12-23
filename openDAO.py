@@ -55,7 +55,7 @@ class OpenDAO:
         cursor = db.cursor()
         sql ="truncate table org_list"
         cursor.execute(sql)
-        self.db.commit()
+        db.commit()
         #cursor.close()
 
     def truncateDatasetsTable(self):
@@ -63,7 +63,7 @@ class OpenDAO:
         cursor = db.cursor()
         sql ="truncate table dataset_list"
         cursor.execute(sql)
-        self.db.commit()
+        db.commit()
         #cursor.close()
 
     def truncateTagsTable(self):
@@ -71,7 +71,7 @@ class OpenDAO:
         cursor = db.cursor()
         sql ="truncate table tag_list"
         cursor.execute(sql)
-        self.db.commit()
+        db.commit()
         #cursor.close()
 
     def truncateDatasets(self):
@@ -79,7 +79,7 @@ class OpenDAO:
         cursor = db.cursor()
         sql ="truncate table datasets"
         cursor.execute(sql)
-        self.db.commit()
+        db.commit()
         #cursor.close()
         
 
@@ -97,7 +97,7 @@ class OpenDAO:
     # to get it into a tuple
             values = eval(value)
             cursor.execute(sql,values)
-        self.db.commit()
+        db.commit()
         cursor.close()
 
 
@@ -114,7 +114,7 @@ class OpenDAO:
     # to get it into a tuple
             values = eval(value)
             cursor.execute(sql,values)
-        self.db.commit()
+        db.commit()
         cursor.close()    
 
     def loadDatasetsTable(self, action='package_list'):
@@ -130,7 +130,7 @@ class OpenDAO:
         # to get it into a tuple
             values = eval(value)
             cursor.execute(sql,values)
-        self.db.commit()
+        db.commit()
         cursor.close()    
 
 
@@ -176,7 +176,7 @@ class OpenDAO:
                     resource['format'],
                     resource['created']]
                 cursor.execute(sql, values)
-        self.db.commit()
+        db.commit()
         cursor.close()
 
 

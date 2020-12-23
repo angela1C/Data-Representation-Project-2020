@@ -16,7 +16,7 @@ class DataDAO:
             password=   cfg.mysql['password'],
             database=   cfg.mysql['db'],
             pool_name='my_connection_pool',
-            pool_size=10
+            pool_size=20
         )
         return db
 
@@ -303,7 +303,8 @@ class DataDAO:
 
 
     def addDataset(self):
-        cursor = self.db.cursor()
+        db = self.getConnection()
+        cursor = db.cursor()
         sql = "insert into mydatasets (dataset) values ('testingfrompython')"
             
             #values="testing_insertfrompython";
