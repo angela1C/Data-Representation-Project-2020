@@ -49,3 +49,7 @@ The requirements.txt file contains the requirements including `requests` and `py
 
 
 
+---
+## Python Anywhere
+
+mkvirtualenv --python=/usr/bin/python3.8 venv

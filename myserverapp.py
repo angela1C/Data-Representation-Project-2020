@@ -3,15 +3,43 @@ from openDAO import openDAO
 from searchDAO import searchDAO
 
 
-from flask import Flask, url_for, request, redirect, abort, jsonify
-#from flask_cors import CORS
+from flask import Flask, session, url_for, request, redirect, abort, jsonify
 app = Flask(__name__, static_url_path='', static_folder='staticpages')
-#CORS(app)
+
+app.secret_key = 'topsecretcodefortopsecretproject'
+
+
 
 @app.route('/') 
-def index():
-    return "hello there opendata how are you today"
 
+def home():
+    if not 'username' in session:
+        return redirect(url_for('login'))
+
+    return 'welcome ' + session['username'] + \
+        '<\br><a href="'+url_for('logout')+ '">logout</a>' 
+
+
+#def index():
+#    return "hello there opendata how are you today"
+
+@app.route('/login')
+def login():
+    return'<h1>Login</h1> '+\
+        '<button>'+\
+            '<a href="'+url_for('process_login')+'">' +\
+                'login' +\
+            '</a>' +\
+        '</button>'
+
+@app.route('/processlogin')
+def process_login():
+    #check credentials
+    #if bad redirect to login page again
+
+    #else
+    session['username']="I dunno"
+    return redirect(url_for('home'))
 
 ## THIS IS POPULATING THE TABLES FROM THE API
 

@@ -27,3 +27,13 @@ create table mydatasets(
     -> PRIMARY KEY(id)
     -> );
 
+CREATE TABLE datasets (
+  -> id varchar(40) NOT NULL,
+  -> package_id varchar(40) DEFAULT NULL,
+  -> name varchar(250) DEFAULT NULL,
+  -> description varchar(250) DEFAULT NULL,
+  -> url varchar(400) DEFAULT NULL,
+  -> format varchar(50) DEFAULT NULL,
+  -> created date DEFAULT NULL,
+  -> PRIMARY KEY (id)
+  ->  );
