@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Index</title>
+        <title>Load</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -24,33 +24,28 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"  href="index.html">Home</a>
+                    <a class="nav-link"  href="index.html">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchTags.html">Search Tags</a>
+                    <a class="nav-link" href="searchTags.html">Tags</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                    <a class="nav-link" href="searchOrgs.html">Publishers</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
+                    <a class="nav-link" href="searchDatasets.html">Datasets </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchResources.html">Search Resources</a>
+                    <a class="nav-link" href="searchResources.html">Resources</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="search.html">Search</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link  active" aria-current="page" href="load.html">Search</a>
+                  </li>
+                                  
 
-                  <li class="nav-item">
-                    <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="getAllTags.html">Tags</a>
-                  </li>
-                  
-                  
-
-                
-                
-                  
                 </ul>
               </div>
             </div>
@@ -58,14 +53,27 @@
         </div>
 
 <div class="container">
+  <div class="jumbotron">
+    
+    This application connects with the Open Data Portal using the API. 
+    To retrieve the list of publishers, tags used or the list of datasets hosted on the open data portal, click the buttons below.
+    To view or search the lists returned from the database please use the links at the top of the page.
 
-        <div id='loadForm' style="display: block">
-            <h3><span id="createLabel">Load</span></h3>
+
+    
+  </div>
+
+        <div id='loadForm' style="display: block" class="text-center">
+            
             <input type="hidden" name="id"/>
     
     
-            Organisation database <input type="text" name="table_name" />
-            <span><button id="loadTablesButton" onclick="loadOrgsAjax()">Load Organizations</button></span></br>
+          
+            <span><button id="loadOrgsTablesButton" onclick="loadOrgsAjax()">Load list of Publishers / Organizations</button></span></br>
+  
+            <span><button id="loadTagsTablesButton" onclick="loadTagsAjax()">Load list Tags</button></span></br>
+          
+            <span><button id="loadDatasetsTablesButton" onclick="loadDatasetsAjax()">Load list datasets</button></span></br>
             
         </div>
 
@@ -81,6 +89,52 @@ function loadOrgsAjax(){
             $.ajax({
                 
                 "url": host+"/orgs_load",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                
+                "success":function(result){
+                    console.log("loading")
+                    console.log(result)
+                                   
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        function loadTagsAjax(){
+            host = window.location.origin
+            
+            $.ajax({
+                
+                "url": host+"/tags_load",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                
+                "success":function(result){
+                    console.log("loading")
+                    console.log(result)
+                                   
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
+
+        function loadDatasetsAjax(){
+            host = window.location.origin
+            
+            $.ajax({
+                
+                "url": host+"/packages_load",
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",

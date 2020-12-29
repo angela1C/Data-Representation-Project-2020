@@ -27,26 +27,22 @@
                     <a class="nav-link active" aria-current="page"  href="index.html">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchTags.html">Search Tags</a>
+                    <a class="nav-link" href="searchTags.html">Tags</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                    <a class="nav-link" href="searchOrgs.html">Publishers</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
+                    <a class="nav-link" href="searchDatasets.html">Datasets </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchResources.html">Search Resources</a>
+                    <a class="nav-link" href="searchResources.html">Resources</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="search.html">Search</a>
                   </li>
-
                   <li class="nav-item">
-                    <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="getAllTags.html">Tags</a>
+                    <a class="nav-link" href="load.html">Load</a>
                   </li>
                                   
 
@@ -61,47 +57,22 @@
 
 
 
-<div class="container">    
+<div class="container">  
+  
+    <div class="jumbotron">
     <div class="text-center">
             <h1>Irish Open Datasets</h1>
-            <p> List of datasets available through the open data portal</p> 
-            <button id="showQueryButton" onclick="showQuery()">Query</button>
+            Ireland's Open Data Portal publishes Irish Public Sector data in open, free and reusable formats.
+    According to the website at data.gov.ie, 
+    "The concept of Open Data is about making data held by public bodies available and easily accessible online for reuse and redistribution. 
+    As public bodies have progressed in areas like eGovernment and data analytics, the potential of data and, in particular, Open Data to help deliver economic, social and democratic benefits has become clearer. The data.gov.ie portal brings these datasets together in a single searchable website."
+
+            
     </div>
 
+  </div>
 
-
-    <div id='findResourcesForm' style="display: block">
-        <h3><span id="createLabel">Find Dataset Resources</span></h3>
-        <input type="hidden" name="id"/>
-
-
-        Dataset Name <input type="text" name="dataset_name" />
-        <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span></br>
-        
-        External Search <input type="text" name="query_name" />
-        <span><button id="getExternalResourcessByQueryButton" onclick="getExternalDatasetResources()">Find External Resources</button></span></br>
-        
-        Update <button id="doUpdateButton" onclick="doUpdate()">Update</button>
-        Delete <button id="doDeleteButton" onclick="doDelete()">Delete</button></br>
-
-        Id <input type="text" name="Id" />
-        Find by Id<button id="findByIdButton" onclick="findById()">Find Resource by Id</button>
-    </br>
-        Description<input type="text" name="description"/>
-    </div>
-
-    <div id="search-resources" style="display:hide  ">
-
-        <div class="table-responsive .table-striped">
-            <table id="resourcesTable" class=" table">
-                <thead class="thead-dark">
-                <tr>
-                    <th>Name</th><th>Url</th><th>Id</th><th>description</th><th>Created</th><th>package_id</th><th>format</th>
-                </tr>
-                </thead>
-                
-            </table>
-        </div>     
+  
            
 
 </div>     

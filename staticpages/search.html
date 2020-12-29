@@ -24,30 +24,27 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"  href="index.html">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchTags.html">Search Tags</a>
+                    <a class="nav-link" href="searchTags.html">Tags</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                    <a class="nav-link" href="searchOrgs.html">Publishers</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
+                    <a class="nav-link" href="searchDatasets.html">Datasets </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchResources.html">Search Resources</a>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
+                    <a class="nav-link" href="searchResources.html">Resources</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="getAllTags.html">Tags</a>
+                    <a class="nav-link  active" aria-current="page"  href="search.html">Search</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="all.html">All</a>
-                  </li>                  
+                    <a class="nav-link" href="load.html">Load</a>
+                  </li>
+                                      
 
                 </ul>
               </div>
@@ -65,7 +62,7 @@
         The datasets on the Irish open data portal at data.gov.ie are in a variety of formats including csv, json-stat, JSON, px, API etc.
         You can search for a link to a dataset resource here. Enter your search query in the form below. You can also search by the dataset resource id.
         To delete a dataset link from the database, press the delete button on the table. Please note that this will delete the record from the database.
-        
+
         
 
 
@@ -83,7 +80,7 @@
       <input type="hidden" name="id"/>
 
       <p>
-      <input type="text" name="dataset_name" />
+      <input type="text" name="dataset_name" placeholder="rain"/>
       <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span></br>
     </p>
     
@@ -97,10 +94,10 @@
   <div id="search-resources" style="display:hide">
 
     <div class="table-responsive">
-        <table id="resourcesTable" class="table-sm small">
+        <table id="resourcesTable" class="table-sm small vertical-align: middle;">
             <thead class="thead-dark">
             <tr>
-                <th>Name</th><th>Url</th><th>Id</th><th>description</th><th>Created</th><th>package_id</th><th>format</th>
+                <th>Name</th><th style="width:1px; white-space:wrap;">Description</th><th scope="col">Id</th><th scope="col">Format</th><th scope="col">Created</th><th scope="col">package_id</th><th scope="col">URL</th><th>Delete</th><th>Update</th>
             </tr>
             </thead>
             
@@ -176,20 +173,25 @@
         tableElement.style.display="block"
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',resource.id)
+
         var cell1 = rowElement.insertCell(0);
         cell1.innerHTML = resource.name
+
+        // could try make this a link
         var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = resource.url
+        cell2.innerHTML = resource.description;
+        
+  
         var cell3 = rowElement.insertCell(2);
         cell3.innerHTML = resource.id
         var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = resource.description
+        cell4.innerHTML = resource.format
         var cell5 = rowElement.insertCell(4);
         cell5.innerHTML = resource.created
         var cell6 = rowElement.insertCell(5);
         cell6.innerHTML = resource.package_id
         var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = resource.format
+        cell7.innerHTML = resource.url
 
         var cell8 = rowElement.insertCell(7);
         cell8.innerHTML='<button onclick=doDelete(this) class="btn btn-danger">delete</button>'
