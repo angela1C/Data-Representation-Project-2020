@@ -42,9 +42,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="getAllTags.html">Tags</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="all.html">All</a>
-              </li>                  
+                           
 
             </ul>
           </div>
@@ -130,7 +128,7 @@
 
         }
 
-    function addTagToTable1(tag){
+    function addTagToTable(tag){
         var tableElement = document.getElementById('tagTable')
         tableElement.style.display="block"
         var rowElement = tableElement.insertRow(-1)
@@ -152,7 +150,7 @@
                 "success":function(result){
                     console.log(result);
                     // 
-                    addTagToTable1(result)
+                    addTagToTable(result)
                                         
                 },
                 "error":function(xhr,status,error){
@@ -176,7 +174,7 @@
                     console.log("testing get tag by char");
                     console.log(result)
                     for (tag of result){
-                        addTagToTable1(tag)
+                        addTagToTable(tag)
                     }
 
                     

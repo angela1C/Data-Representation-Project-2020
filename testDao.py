@@ -116,8 +116,8 @@ if __name__ =="__main__":
     #id="025f1d0c-1dd7-43d2-a924-5c4ec9217f4b"
     #dataDAO.updateResource(values)
 
-    params = "Acts of the Oireachtas"
-    params ="1969"
+    
+    params ="teach"
     result = searchDAO.datasetSearch(params=params)
     print(result)
 

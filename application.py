@@ -18,14 +18,14 @@ def index():
 # This is coming from openDAO - maybe have admin access to do this
 # Have the tables loaded before the server runs, only admin access then to run it
 #get all packages - The list of packages are returned from the open data portal api.
-@app.route('/packages_load')
+@app.route('/packages_load',methods=['GET'])
 def loadPackages():
     openDAO.truncateDatasetsTable()
     #print("cleared dataset_list table")
     openDAO.loadDatasetsTable()
     return "The dataset_list table has been loaded from Irish Open data portal "
 
-@app.route('/tags_load')
+@app.route('/tags_load',methods=['GET'])
 def loadTags():
     # clear table if already populated so it is not duplicated
     openDAO.truncateTagsTable()
@@ -33,7 +33,7 @@ def loadTags():
     return "The tag_list table has been loaded from Irish Open data portal "
 
 
-@app.route('/orgs_load')
+@app.route('/orgs_load', methods=['GET'])
 def loadOrgs():
     # clear table if already populated so it is not duplicated
     openDAO.truncateOrgsTable()
@@ -42,12 +42,12 @@ def loadOrgs():
 
 ## the tag route
 
-@app.route('/tags')
+@app.route('/tags',methods=['GET'])
 def getAllTags():
     results = dataDAO.getAllTags()
     return jsonify(results)
 
-@app.route('/tags/<int:id>')
+@app.route('/tags/<int:id>',methods=['GET'])
 def findTagById(id):
     foundTag = dataDAO.findTagById(id)
     if len(foundTag) == 0:
@@ -55,7 +55,7 @@ def findTagById(id):
     return jsonify(foundTag)
 
 
-@app.route('/tags/<string:char>')
+@app.route('/tags/<string:char>', methods=['GET'])
 def findTagByChar(char):
     foundTag = dataDAO.findTagByChar(char)
     if len(foundTag) == 0:
@@ -63,21 +63,22 @@ def findTagByChar(char):
     return jsonify(foundTag)
 
 
-## The org route
-@app.route('/orgs')
+## The organisations route - to retrieve data about publishers of open data on data.gov.ie
+# data is stored in the org_list table.
+@app.route('/orgs',methods=['GET'])
 
 def getAllOrgs():
     results = dataDAO.getAllOrgs()
     return jsonify(results)
 
-@app.route('/orgs/<int:id>')
+@app.route('/orgs/<int:id>',methods=['GET'])
 def findOrgById(id):
     foundOrg = dataDAO.findOrgById(id)
     if len(foundOrg) == 0:
         return jsonify({}) , 204
     return jsonify(foundOrg)
 
-@app.route('/orgs/<string:query>')
+@app.route('/orgs/<string:query>',methods=['GET'])
 def findOrgs(query):
     foundOrgs = dataDAO.findOrgs(query)
     if len(foundOrgs) == 0:
@@ -190,7 +191,7 @@ def datasetResourceSearch():
 ### this is using a different route to the same one at the top of this file
 # @app.route('/external_search/<string:query>')
 
-@app.route('/resources/<string:query>',methods=['GET','PUT','DELETE','POST'])
+@app.route('/resources/<string:query>',methods=['GET','POST'])
 def findExternalDatasetResource(query):
 
     foundResource = searchDAO.datasetSearch(query)

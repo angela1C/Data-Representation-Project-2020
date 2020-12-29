@@ -111,8 +111,6 @@ The [developer's corner](https://data.gov.ie/developer) provides some links to J
 
 See <https://derilinx.com/new-features-for-developers-now-available-on-data-gov-ie/>
 
-Note for now I am only looking at the functions in the notebooks to figure out how to use the APIs to get the json files with the actual data down.
-I am not doing anything elaborate with the data for now!  Therefore only using the `requests` and the `json` packages. These notebooks do seem a bit out of date as some if the Python packages are deprecated. 
 ---
 
 # Using the API

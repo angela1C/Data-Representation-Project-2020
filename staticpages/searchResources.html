@@ -50,13 +50,18 @@
 
 
 <div class="container">
+  <div class="jumbotron">
+    On this page you can search for datasets externally.
+    <p>Enter Tag name, organization name or dataset name</p>
+
+  </div>
     <div id='findResourcesForm' style="display: block">
-        <h3><span id="createLabel">Find Dataset Resources</span></h3>
-        <p>Enter Tag name, organization name or dataset name</p>
+        
+        
         <input type="hidden" name="id"/>
         <input type="text" name="search_query" />
-        <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span>
-        <span><button id="getDatasetResourcessByQueryButton" onclick="queryExternalResources()">Find External Resources</button></span></br></br>
+        
+        <span><button id="getDatasetResourcesByQueryButton" class="btn btn-info" onclick="queryExternalResources()">Find External Resources</button></span></br></br>
         
         <input type="text" name="ID" />
         <button id="findByIdButton" onclick="findById()">Find Resource by Id</button><br></br>
@@ -64,16 +69,7 @@
 
     <div id="search-resources" style="display:hide  ">
 
-        <div class="table-responsive .table-striped">
-            <table id="resultsTable" class=" table">
-                <thead class="thead-dark">
-                <tr>
-                    <th>Name</th><th>Url</th><th>Id</th><th>description</th><th>Created</th><th>package_id</th>
-                </tr>
-                </thead>
-                
-            </table>
-        </div>                   
+                     
     
 </div>    
     </div>
@@ -130,70 +126,7 @@
 
         }
 
-    //<th>Url</th><th>Format</th><th>name</th><th>description</th><th>Created</th><th>id</th><th>package_id</th>
-    function addResourceToTable(resource){
-        var tableElement = document.getElementById('resourcesTable')
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',resource.id)
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = resource.name
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = resource.url
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = resource.id
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = resource.description
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = resource.created
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = resource.package_id
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML='<button onclick=doDelete(this)>delete</button>'
-        var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML='<button onclick=doUpdate(this)>update</button>'
-        }
-
-    function clearForm(){
-        var form = document.getElementById('findDatasetForm')
-        form.querySelector('input[name="id"]').value=''
-        form.querySelector('input[name="package_id"]').value=''
-        form.querySelector('input[name="package_name"]').value=''
-        document.getElementById('packageTable').style.display="none"
-    }   
       
 
-
-
-
-          function findByIdAjax(Id){
-            host = window.location.origin
-            
-            $.ajax({
-                //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/dataset_resources/" + encodeURI(Id),
-                "method":"GET",
-                "data":"",
-                "dataType": "JSON",
-                
-                "success":function(result){
-
-                   
-                      console.log(result)
-                      
-                    
-  
-                    
-                },
-                "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-        }
-
-
-
-
-   //getTagByIdAjax();
     </script>
 </html>
