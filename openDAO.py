@@ -134,53 +134,6 @@ class OpenDAO:
         cursor.close()    
 
 
-# HERE!
-
-   
-
-
-
-    # I won't truncate this table. Instead use ignore insert to prevent entries with duplicate primary keys if the
-    # function is called with the same query parameter
-
-    # maybe I should not have this as the same class. Only have the API calls withe 
-
-
-    query = {'q':'phone'}
-    #def datasetSearch(self,action ="package_search", params={'q': 'accidents' }):
-    def datasetSearch(self,action ="package_search", params=query):  
-        db = self.getConnection()  
-        #params= {'q': 'accidents' } 
-        self.action = action
-        
-        self.response = requests.get(self.url+action,params)
-        data = self.response.json()
-        cursor = db.cursor()
-
-        for result in data["result"]["results"]:
-            resources = result['resources']
-            for resource in resources:
-            #print(resource['package_id'], resource['name'], resource['description'], resource['url'],resource['format'],resource['created'] )
-            #values = "('" + resource['package_id'] + "',)" 
-            #values = eval(values)
-           
-           
-            
-                sql="insert ignore into datasets (id, package_id, name,  description, url, format, created) values (%s,%s,%s,%s,%s,%s,%s)"
-                values = [
-                    resource['id'],
-                    resource['package_id'],
-                    resource['name'],
-                    resource['description'],
-                    resource['url'],
-                    resource['format'],
-                    resource['created']]
-                cursor.execute(sql, values)
-        db.commit()
-        cursor.close()
-
-
-
 
 # create an instance of the object   
 openDAO = OpenDAO()

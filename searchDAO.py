@@ -35,6 +35,7 @@ class SearchDAO:
         
         
         self.response = requests.get(self.url+self.action+self.params)
+        print(self.response)
         data = self.response.json()
         cursor = self.db.cursor()
 

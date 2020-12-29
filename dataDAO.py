@@ -33,7 +33,7 @@ class DataDAO:
 
 
 ## ************************** PART 1 ***********************************************
-##   ***************************
+##   *************************** DATASET_LIST table
     # @app.route('/datasets/')
     def getAllDatasets(self):
         db = self.getConnection()
@@ -43,7 +43,7 @@ class DataDAO:
         # returns tuples, need to convert into dict objects for json later on
         results = cursor.fetchall()
         returnArray = []
-        print(results)
+        #print(results)
         for result in results:
             returnArray.append(result) 
           
@@ -67,7 +67,7 @@ class DataDAO:
             returnArray.append(result)            
             
         cursor.close()
-        print(returnArray)
+        #print(returnArray)
         return returnArray
 
 
@@ -83,7 +83,7 @@ class DataDAO:
         cursor.close()
         return result    
 
-    # @app.route('/tags')
+    # @app.route('/tags')   # TAG_LIST table
     def getAllTags(self):
         db = self.getConnection()
         cursor = db.cursor()
@@ -91,14 +91,14 @@ class DataDAO:
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
-        print(results)
+        #print(results)
             # returns tuples, need to convert into dict objects for json later on
         for result in results:
             returnArray.append(self.convertToDictionaryT(result))   
         cursor.close()  
         return returnArray 
 
-    # @app.route('/tags/<int:id>')
+    # @app.route('/tags/<int:id>')  # TAG_LIST table
     def findTagById(self, id):
         db = self.getConnection()
         cursor = db.cursor()
@@ -110,7 +110,7 @@ class DataDAO:
         cursor.close()
         return tag
 
-    # @app.route('/tags/<string:char>')
+    # @app.route('/tags/<string:char>')  # TAG_LIST table
     def findTagByChar(self, char):
         db = self.getConnection()
         cursor = db.cursor()
@@ -136,7 +136,7 @@ class DataDAO:
             
             return item
 
-    # @app.route('/orgs')
+    # @app.route('/orgs')  # ORG_LIST table
     def getAllOrgs(self):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
@@ -151,7 +151,7 @@ class DataDAO:
         cursor.close()  
         return returnArray 
 
-    # @app.route('/orgs/<int:id>')
+    # @app.route('/orgs/<int:id>')  # ORG_LIST table
     def findOrgById(self, id):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
@@ -162,7 +162,7 @@ class DataDAO:
         cursor.close()
         return result
 
-    # @app.route('/orgs/<string:query>')
+    # @app.route('/orgs/<string:query>') # ORG_LIST table
     def findOrgs(self, query):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
@@ -179,7 +179,7 @@ class DataDAO:
             returnArray.append(result)            
             
         cursor.close()
-        print(returnArray)
+        #print(returnArray)
         return returnArray
 
 
@@ -229,8 +229,8 @@ class DataDAO:
         cursor.close()  
         return returnArray 
 
-
-    # @app.route('/myresources/<string:id>', methods=['GET','PUT','DELETE'])
+    # @app.route('/dataset_resources/<string:id>')
+    # 
     def findResourceById(self,id):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
@@ -239,7 +239,7 @@ class DataDAO:
         cursor.execute(sql, values)
         result = cursor.fetchone()
         cursor.close()
-        print(result)
+        #print(result)
         
         return result
 
@@ -255,12 +255,14 @@ class DataDAO:
         print(f"the values {values}")
         cursor.execute(sql, values)
         results = cursor.fetchall()
+        
         returnArray = []
+        
         for result in results:
             returnArray.append(result)            
         
         cursor.close()
-        print(returnArray)
+        #print(returnArray)
         return returnArray
 
 
@@ -272,7 +274,7 @@ class DataDAO:
         values = (id,)
         cursor.execute(sql, values)
 
-        self.db.commit()
+        db.commit()
         print("delete done")
         cursor.close()
 
@@ -283,7 +285,7 @@ class DataDAO:
         sql = "update datasets set description =%s where id = %s"
         #values=("testing update from python",id,)
         cursor.execute(sql, values)
-        self.db.commit()
+        db.commit()
         print("update done")
         cursor.close()
 

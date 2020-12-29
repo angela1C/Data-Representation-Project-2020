@@ -40,16 +40,9 @@ def loadOrgs():
     openDAO.loadOrgsTable()
     return "The org_list table has been loaded from Irish Open data portal "
 
-
-@app.route('/external_search')
-def datasetSearch():
-    openDAO.datasetSearch()  
-    print("hello there")
-
 ## the tag route
 
 @app.route('/tags')
-
 def getAllTags():
     results = dataDAO.getAllTags()
     return jsonify(results)
@@ -92,7 +85,7 @@ def findOrgs(query):
     return jsonify(foundOrgs)
 
 
-# this now reads from the big table that contains just the package_name returned from the package_search api
+# this now reads from the dataset_list table that contains just the package_name returned from the package_search api
 @app.route('/datasets/')
 
 def getAllDatasets():
@@ -116,7 +109,7 @@ def findDatasetById(id):
 
 
 #######################################################################
-# show resources / datasets with csv or json datasets
+# show resources / datasets with csv or json datasets       DATASETS table
 @app.route('/datasetUrls')
 def findDatasetUrls():
     foundDatasetUrls = dataDAO.getDatasetUrls()
@@ -141,7 +134,7 @@ def findResourceById(id):
     return jsonify(foundResource)
 
 
-# find dataset by query     WORKING now with a new route
+# find dataset by query FIND A DATASET FROM DATASETS WHERE NAME LIKE %S
 @app.route('/dataset_resources_query/<string:query>')
 def findDatasetResource(query):
     foundResource = dataDAO.findADataset(query)
@@ -153,6 +146,8 @@ def findDatasetResource(query):
 @app.route('/myresources/<string:id>', methods=['GET','PUT','DELETE'])
 def findById(id):
     foundResource = dataDAO.findResourceById(id)
+    if len(foundResource) == 0:
+        return jsonify({}) , 204
    
     return jsonify(foundResource)
 
@@ -165,8 +160,8 @@ def deleteResource(id):
     return jsonify({"done":True})
 
 
-# update is NOT working yet
-@app.route('/updateresource/<string:id>', methods=['PUT'])
+# update is NOT working yet, COME BACK TO THIS
+@app.route('/update_resource/<string:id>', methods=['PUT','POST'])
 def updateResource(id):
     foundResource =dataDAO.findResourceById(id)
     if not foundResource:
@@ -175,30 +170,32 @@ def updateResource(id):
     if not request.json:
         abort(400)
 
-    reqJson = request.json
+
+    reqJson = request.json.get('Description')
+    return jsonify
     if'Description' in reqJson:
         foundResource['Description'] = reqJson['Description']
     values=(foundResource['Description'])
-    dataDAO.update(values)
+    dataDAO.updateResource(values)
+    return jsonify({"done":True})
 
-    return jsonify(foundResource)
+    #return jsonify(foundResource)
 
-
-
-
-
-
+# The idea is to take a query in by form and send a request to the package_search api to open data portal
 @app.route("/resources")
 def datasetResourceSearch():
     return "hello"
 
-@app.route('/resources/<string:query>')
+# HERE! this is working
+### this is using a different route to the same one at the top of this file
+# @app.route('/external_search/<string:query>')
+
+@app.route('/resources/<string:query>',methods=['GET','PUT','DELETE','POST'])
 def findExternalDatasetResource(query):
 
     foundResource = searchDAO.datasetSearch(query)
-    if len(foundResource) == 0:
-        return jsonify({}) , 204
-    return jsonify(foundResource)
+    
+    return "done indeed"
 
 
 

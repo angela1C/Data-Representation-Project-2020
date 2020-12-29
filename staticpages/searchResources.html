@@ -65,7 +65,7 @@
         Dataset Name <input type="text" name="dataset_name" />
         <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span></br>
         
-        External Search <input type="text" name="query_name" />
+        External Search <input type="text" name="external" />
         <span><button id="getExternalResourcessByQueryButton" onclick="getExternalDatasetResources()">Find External Resources</button></span></br>
         
         Update <button id="doUpdateButton" onclick="doUpdate()">Update</button>
@@ -86,11 +86,7 @@
                 </thead>
                 
             </table>
-        </div>     
-        
-       
-
-              
+        </div>                   
     
 </div>    
 
@@ -130,8 +126,9 @@
             //query = getQueryFromForm().package_name
             $.ajax({
                 //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/dataset_resources/" + encodeURI(query),
-                "method":"GET",
+                //"url": host+"/dataset_resources/" + encodeURI(query),
+                "url": host+"/external_resources/" +encodeURI(query),
+                "method":"POST",
                 "data":"",
                 "dataType": "JSON",
                 

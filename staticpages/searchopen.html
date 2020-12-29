@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Index</title>
+        <title>Search Open</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -156,7 +156,10 @@ function getQueryFromForm(){
                 
                 "success":function(result){
 
-                   
+                    console.log(result)
+                    
+
+                
                       for (resource of result){
                         addResourceToTable(resource)
                     } 
@@ -320,22 +323,23 @@ function getQueryFromForm(){
     function doUpdate(){
         var resource =getUpdateFromForm();
         console.log("inside DoUpdate")
-        //console.log(resource)
+        console.log(resource)
         var rowElement = document.getElementById(resource.Id) // maybe the Id ??
-        console.log("rowElement")
         console.log(rowElement)
         updateResourceAjax(resource)
-        //setResourceInRow(rowElement,resource)
+        setResourceInRow(rowElement,resource)
     
   }  
   
+  
+    
 
   function updateResourceAjax(resource){
     host = window.location.origin
     console.log(JSON.stringify(resource));
     $.ajax({
                 // not sure here whether to use the myresources
-                "url": host+"/update_resource/" + encodeURI(resource.Id),
+                "url": host+"/myresources/" + encodeURI(resource.Id),
                 "method":"PUT",
                 "data":JSON.stringify(Id),
                 "dataType": "JSON",

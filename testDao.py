@@ -112,9 +112,16 @@ if __name__ =="__main__":
     #dataDAO.deleteResource(id)
 
     # UPDATE this is working here
-    values = ("testing updating from python",)
-    id="025f1d0c-1dd7-43d2-a924-5c4ec9217f4b"
-    dataDAO.updateResource(values)
+    #values = ("testing updating from python",)
+    #id="025f1d0c-1dd7-43d2-a924-5c4ec9217f4b"
+    #dataDAO.updateResource(values)
+
+    params = "Acts of the Oireachtas"
+    params ="1969"
+    result = searchDAO.datasetSearch(params=params)
+    print(result)
+
+
 
     
 
