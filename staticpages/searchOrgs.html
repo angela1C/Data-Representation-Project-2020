@@ -21,13 +21,13 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                <a class="nav-link"  href="index.html">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="searchTags.html">Search Tags</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
+                <a class="nav-link active" aria-current="page" href="searchOrgs.html">Search Orgs</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
@@ -52,23 +52,30 @@
         </div>
       </nav>
     </div>
+<div class="container">
+</br><p>An organization / publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on the portal. There are currently 135 publishers of open data on the portal.
+  To search for a publisher enter a query. To search for all publishers leave blank. To narrow a search or widen a search use a percentage sign as a wildcard.
+  
+</p>
 
+
+</div>
 
 <div class="container">
 </br>
 <!-- to load the organisation table-->
     <div class="col-sm-4" class="table-responsive">
-    <button onclick="getAllOrgAjax()"class="btn btn-info">getAllOrganizations</button>
+    
   </br></div>
 
 <!-- to search for organisation-->
     <div id='findOrgForm' style="display: block">
-        <h4><span id="createLabel">Find an organisation</span></h4>
+      
         <input type="hidden" name="id"/>
 
 
         Organisation Name <input type="text" name="organization_name" />
-        <span><button id="getOrganizationByQueryButton" onclick="queryOrgs()">Query Organizations by name</button></span></br>
+        <span><button id="getOrganizationByQueryButton" class="btn btn-info" onclick="queryOrgs()">Query Organizations by name</button></span></br>
         
     </div>
 

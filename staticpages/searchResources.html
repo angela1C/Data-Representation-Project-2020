@@ -41,12 +41,7 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="getAllTags.html">Tags</a>
-              </li>
-              
-
-            
-            
-              
+              </li> 
             </ul>
           </div>
         </div>
@@ -55,30 +50,22 @@
 
 
 <div class="container">
-
-
     <div id='findResourcesForm' style="display: block">
         <h3><span id="createLabel">Find Dataset Resources</span></h3>
+        <p>Enter Tag name, organization name or dataset name</p>
         <input type="hidden" name="id"/>
-
-
-        Dataset Name <input type="text" name="dataset_name" />
-        <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span></br>
+        <input type="text" name="search_query" />
+        <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span>
+        <span><button id="getDatasetResourcessByQueryButton" onclick="queryExternalResources()">Find External Resources</button></span></br></br>
         
-        External Search <input type="text" name="external" />
-        <span><button id="getExternalResourcessByQueryButton" onclick="getExternalDatasetResources()">Find External Resources</button></span></br>
-        
-        Update <button id="doUpdateButton" onclick="doUpdate()">Update</button>
-        Delete <button id="doDeleteButton" onclick="doDelete()">Delete</button></br>
-
-        Id <input type="text" name="Id" />
-        Find by Id<button id="findByIdButton" onclick="findById()">Find Resource by Id</button>
+        <input type="text" name="ID" />
+        <button id="findByIdButton" onclick="findById()">Find Resource by Id</button><br></br>
     </div>
 
     <div id="search-resources" style="display:hide  ">
 
         <div class="table-responsive .table-striped">
-            <table id="resourcesTable" class=" table">
+            <table id="resultsTable" class=" table">
                 <thead class="thead-dark">
                 <tr>
                     <th>Name</th><th>Url</th><th>Id</th><th>description</th><th>Created</th><th>package_id</th>
@@ -89,8 +76,6 @@
         </div>                   
     
 </div>    
-
-
     </div>
     
     </body>
@@ -99,46 +84,43 @@
 // get tag entered on the form, either by tag id or tag name
     function getQueryFromForm(){
     var form = document.getElementById('findResourcesForm')
-    var dataset = {}
-    dataset.id = form.querySelector('input[name="id"]').value
+    var search = {}
+    search.id = form.querySelector('input[name="id"]').value
     //dataset.package_id = form.querySelector('input[name="package_id"]').value
-    dataset.name = form.querySelector('input[name="dataset_name"]').value // + "%"
-    // added additional one for external queries if we don;t have it already in the table
-    dataset.query = form.querySelector('input[name="query_name"]').value
-    dataset.Id = form.querySelector('input[name="Id"]').value
-    return dataset
+    search.query = form.querySelector('input[name="search_query"]').value // + "%"
+   
+    search.ID = form.querySelector('input[name="ID"]').value
+    return search
     }
 
     //+ "%" + encodeURI(query)
 
-    function queryDatasetResources(){
+    function queryExternalResources(){
         // here I am calling the ajax query but also trying to clear the form and the table
-        query = getQueryFromForm().name
-        console.log(query)
-        
-        var tableElement = document.getElementById('resourcesTable')
-        queryResourcesAjax(query)
-        
+        id = getQueryFromForm().id
+        query = getQueryFromForm().query
+        ID =getQueryFromForm().ID
+        console.log("hello")
+        console.log(id,query, ID)
+
+        queryExternalResourcesAjax(query)    
     }
 
-    function queryResourcesAjax(query){
+    // call the function to go to external API package_search
+    function queryExternalResourcesAjax(query){
             host = window.location.origin
             //query = getQueryFromForm().package_name
             $.ajax({
                 //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                //"url": host+"/dataset_resources/" + encodeURI(query),
-                "url": host+"/external_resources/" +encodeURI(query),
-                "method":"POST",
+                "url": host+"/resources/" + encodeURI(query),
+                "method":"GET",
                 "data":"",
                 "dataType": "JSON",
                 
                 "success":function(result){
-
-                   
-                      for (resource of result){
-                        addResourceToTable(resource)
-                    } 
-  
+                    
+                    console.log(result)
+                             
                     
                 },
                 "error":function(xhr,status,error){
@@ -147,9 +129,6 @@
             });
 
         }
-
-
-
 
     //<th>Url</th><th>Format</th><th>name</th><th>description</th><th>Created</th><th>id</th><th>package_id</th>
     function addResourceToTable(resource){
@@ -174,9 +153,6 @@
         cell8.innerHTML='<button onclick=doUpdate(this)>update</button>'
         }
 
-
-
-
     function clearForm(){
         var form = document.getElementById('findDatasetForm')
         form.querySelector('input[name="id"]').value=''
@@ -186,76 +162,7 @@
     }   
       
 
-    function getExternalDatasetResources(){
-        var form = document.getElementById('findResourcesForm')
-        query = getQueryFromForm().query
-        console.log(query)
-        
-        var tableElement = document.getElementById('resourcesTable')
-        queryExternalResourcesAjax(query)
-        
-    }
 
-    // i want this one to call the function to go to external API package_search
-    function queryExternalResourcesAjax(query){
-            host = window.location.origin
-            //query = getQueryFromForm().package_name
-            $.ajax({
-                //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/resources/" + encodeURI(query),
-                "method":"GET",
-                "data":"",
-                "dataType": "JSON",
-                
-                "success":function(result){
-                    
-                    console.log(result)
-                             
-                    
-                },
-                "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-        }
-
-  function doDelete(r){
-    var tableElement = document.getElementById('resourcesTable');
-    var rowElement = r.parentNode.parentNode;
-    var index = rowElement.rowIndex;
-    deleteResourceAjax(rowElement.getAttribute("Id"));
-    tableElement.deleteRow(index);
-  }      
-
-  function deleteResourceAjax(Id){
-    host = window.location.origin
-    $.ajax({
-                
-                "url": host+"/dataset_resources/" + encodeURI(Id),
-                "method":"DELETE",
-                "data":"",
-                "dataType": "JSON",
-                contentType: "application/json; charset=utf-8",
-                "success":function(result){
-                  console.log(result)
-                },
-                "error":function(xhr,status,error){
-                  console.log("error: "+status+" msg: "+error);
-                }
-
-            });
-          }
-
-        function findById(){
-        // here I am calling the ajax query but also trying to clear the form and the table
-        Id = getQueryFromForm().Id
-        console.log(Id)
-        
-        var tableElement = document.getElementById('resourcesTable')
-        findByIdAjax(Id)
-        
-    }
 
 
           function findByIdAjax(Id){
