@@ -54,14 +54,11 @@
 
 
 <div class="container"> 
-  <div class="container">
+  <div class="jumbotron">
     <p>
     </br>
       To search for all tags leave the search field empty. <br>
       To search for a tag or dataset keyword  enter the query in the box. To narrow the search or widen the search use percentage signs as wildcards.
-
-
-
 
     </p>
   
@@ -69,7 +66,6 @@
   </div>
 
     <div id='findTagForm' style="display: block">
-        <h3><span id="createLabel">Find a Tag</span></h3>
         <p>Enter query to search for tag.</p>
         <input type="hidden" name="id"/><br/>
         <p><input type="text" name="Tag_Name"/><span><button class="btn btn-info" id="getTagsByCharButton" onclick="getTagsByCharAjax()">Find a Tag </button></span></p>
@@ -80,7 +76,7 @@
     <div id="search-tag" style="display:hide  ">
 
         <div class="table-responsive .table-striped">
-            <table id="tagIdTable" class=" table table-sm">
+            <table id="tagTable" class=" table table-sm">
                 <thead class="thead-dark">
                 <tr>
                     <th>Tag_id</th><th>Tag</th>
@@ -135,7 +131,8 @@
         }
 
     function addTagToTable1(tag){
-        var tableElement = document.getElementById('tagIdTable')
+        var tableElement = document.getElementById('tagTable')
+        tableElement.style.display="block"
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',tag.tag_id)
         var cell1 = rowElement.insertCell(0);
@@ -190,6 +187,12 @@
             });
 
         }
+
+    
+    function hideTable(){
+    
+      document.getElementById('tagTable').style.display="none"}
+hideTable()
 
     </script>
 </html>

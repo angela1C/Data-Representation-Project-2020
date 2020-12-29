@@ -52,17 +52,19 @@
         </div>
       </nav>
     </div>
+
+
 <div class="container">
-</br><p>An organization / publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on the portal. There are currently 135 publishers of open data on the portal.
-  To search for a publisher enter a query. To search for all publishers leave blank. To narrow a search or widen a search use a percentage sign as a wildcard.
+
+  <div class="jumbotron">
+  </br><p>An organization / publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on the portal. There are currently 135 publishers of open data on the portal.
+    To search for a publisher enter a query. To search for all publishers leave blank. To narrow a search or widen a search use a percentage sign as a wildcard.
   
-</p>
+  </p>
+  
+  
+  </div>
 
-
-</div>
-
-<div class="container">
-</br>
 <!-- to load the organisation table-->
     <div class="col-sm-4" class="table-responsive">
     
@@ -179,6 +181,7 @@ function getAllOrgAjax(){
 
     
     function addOrgToTable(org){
+        document.getElementById('orgTable').style.display="block"
         var tableElement = document.getElementById('orgTable')
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',org.id)
@@ -189,7 +192,13 @@ function getAllOrgAjax(){
         }
 
 
+        function hideTable(){
+    
+      document.getElementById('orgTable').style.display="none"
+   
 
+}
+hideTable()
 
     
       

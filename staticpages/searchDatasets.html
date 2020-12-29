@@ -23,8 +23,6 @@
               <li class="nav-item">
                 <a class="nav-link" href="index.html">Home</a>
               </li>
-
-              
               <li class="nav-item">
                 <a class="nav-link" href="searchTags.html">Search Tags</a>
               </li>
@@ -32,49 +30,55 @@
                 <a class="nav-link" href="searchOrgs.html">Search Orgs</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="searchDatasets.html">Search Datasets </a>
+                <a class="nav-link" href="searchDatasets.html">Search Datasets </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="searchResources.html">Search Resources</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="getAllDatasets.html">AllDatasets</a>
+                <a class="nav-link  active" aria-current="page" href="getAllDatasets.html">AllDatasets</a>
               </li>
-
-            
               <li class="nav-item">
                 <a class="nav-link" href="getAllTags.html">Tags</a>
               </li>
-              
+              <li class="nav-item">
+                <a class="nav-link" href="all.html">All</a>
+              </li>                  
 
-            
-            
-              
+ 
             </ul>
           </div>
         </div>
       </nav>
     </div>
 
-
 <div class="container">
+  <div class="jumbotron">
+    There are currently over ten thousand datasets available on the Irish open data portal under various themes such as Environment, Society, Health, Economy, Government, Transport etc. 
+    to search for datasets, use the query form below. <br>
+    The search can be narrowed by having a more particular search query. 
+    For example to get all datasets that contain the word "rainfall", use percentage sign before and after the term "rainfall". To get datasets that begin with the word rainfall, enter the word rainfall on its own.
+    To get all datasets beginning with 'r', enter 'r' in the search query form.
+    
+
+  </div>
 
 
     <div id='findDatasetForm' style="display: block">
-        <h3><span id="createLabel">Find a Dataset</span></h3>
+        
         <input type="hidden" name="id"/>
 
 
-        Package Name <input type="text" name="package_name" />
-        <span><button id="getDatasetByQueryButton" onclick="queryDatasets()">Query Dataset by name</button></span></br>
+        <input type="text" name="package_name" />
+        <span><button id="getDatasetByQueryButton" class="btn btn-info" onclick="queryDatasets()">Query Dataset by name</button></span></br>
         
     </div>
 
     <div id="search-dataset" style="display:hide  ">
 
         <div class="table-responsive .table-striped">
-            <table id="packageTable" class=" table table-sm">
+            <table id="packageTable" class=" table table-sm" style="display:hide">
                 <thead class="thead-dark">
                 <tr>
                     <th>id</th><th>Dataset Name</th>
@@ -145,6 +149,7 @@
 
     
     function addDatasetToTable(dataset){
+        document.getElementById('packageTable').style.display="block"
         var tableElement = document.getElementById('packageTable')
         var rowElement = tableElement.insertRow(-1)
         rowElement.setAttribute('id',dataset.id)
@@ -163,8 +168,15 @@
         form.querySelector('input[name="package_id"]').value=''
         form.querySelector('input[name="package_name"]').value=''
         document.getElementById('packageTable').style.display="none"
-    }   
-      
-   //getTagByIdAjax();
+    } 
+    
+    function hideTable(){
+    
+    document.getElementById('packageTable').style.display="none"
+   
+
+}
+hideTable()
+     
     </script>
 </html>
