@@ -4,7 +4,6 @@ from searchDAO import searchDAO
 
 
 from flask import Flask, url_for, request, redirect, abort, jsonify, render_template, session
-from markupsafe import escape
 #from flask_cors import CORS
 app = Flask(__name__, static_url_path='', static_folder='staticpages')
 app.secret_key='dataeverywhere'
@@ -14,18 +13,6 @@ users = {"admin":("admin","1234")}
 
 # https://blog.tecladocode.com/how-to-add-user-logins-to-your-flask-website/
 # land the user back to the login page
-
-@app.route('/')
-def index():
-    if 'username' in session:
-        return 'Logged in as %s' % escape(session['username']) +\
-            '<br><a href="'+'/index.html'+'">home</a>' +\
-             '<br><a href="'+url_for('admin')+'">Admin</a>'
-
-    return 'You are not logged in' +\
-        '<br><a href="'+'/index.html'+'">home</a>'
-
-
 @app.route('/admin')
 def admin():
     if not 'username' in session:
@@ -55,7 +42,6 @@ def login():
 def logout():
     session.clear()
     return redirect('/index.html')
-    return redirect(url_for('index'))
 
 
 @app.route('/clear')
@@ -95,9 +81,7 @@ def loadTags():
     elif 'username' in session:
         openDAO.truncateTagsTable()
         openDAO.loadTagsTable()
-        return "The tag_list table has been loaded from Irish Open data portal " +\
-        '<br><a href="'+url_for('logout')+'">logout</a>' +\
-        '<br><a href="'+url_for('index')+'">index</a>'
+        return "The tag_list table has been loaded from Irish Open data portal "
 
 
 
@@ -115,10 +99,10 @@ def loadOrgs():
         return redirect(url_for('login'))
 
 
-@app.route('/admin',methods=['GET'])
+@app.route('/admin.html',methods=['GET'])
 def adminOnly():
     if 'username' in session:
-        return redirect(url_for('home'))
+        return redirect(url_for('create'))
     elif not 'username' in session:
         return redirect(url_for('login'))
 
@@ -239,17 +223,9 @@ def findById(id):
 
 #@app.route('/deleteresources/<string:id>', methods=['GET','PUT','DELETE'])
 @app.route('/deleteresources/<string:id>', methods=['DELETE'])
-
 def deleteResource(id):
-    # this will only delete from the database if the user admin is logged in
-    if 'username' in session:
-   
-    
-        dataDAO.deleteResource(id)
-        return jsonify({"done":True})
-    
-    else:
-        abort(401)
+    dataDAO.deleteResource(id)
+    return jsonify({"done":True})
 
 
 # update is NOT working yet, COME BACK TO THIS

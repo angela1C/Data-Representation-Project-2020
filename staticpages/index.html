@@ -17,7 +17,7 @@
         <div class="container">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">OpenData</a>
+              <a class="navbar-brand" href="home.html">OpenData</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -41,9 +41,7 @@
                   <li class="nav-item">
                     <a class="nav-link" href="search.html">Search</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="load.html">Load</a>
-                  </li>
+                  
                                   
 
                 
@@ -66,13 +64,16 @@
     According to the website at data.gov.ie, 
     "The concept of Open Data is about making data held by public bodies available and easily accessible online for reuse and redistribution. 
     As public bodies have progressed in areas like eGovernment and data analytics, the potential of data and, in particular, Open Data to help deliver economic, social and democratic benefits has become clearer. The data.gov.ie portal brings these datasets together in a single searchable website."
-
+    
             
     </div>
 
   </div>
 
-  
+  <div class="container text-center">
+
+    <br><button id="loginButton" onclick="login()">Login </button>
+  </div>
            
 
 </div>     
@@ -326,6 +327,30 @@ function getQueryFromForm(){
         //rowElement.cells[3].firstChild.textContent=resource.id
         rowElement.cell[4].firstChild.textContent=resource.description
     }
+
+    function login(){
+            host = window.location.origin
+           
+            $.ajax({
+                
+                "url": host+"/login",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                
+                "success":function(result){
+
+                   
+                      console.log(result)
+  
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+        }
 
 
 </script>   

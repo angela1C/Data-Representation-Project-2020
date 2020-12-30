@@ -4,37 +4,18 @@ from searchDAO import searchDAO
 
 
 from flask import Flask, url_for, request, redirect, abort, jsonify, render_template, session
-from markupsafe import escape
 #from flask_cors import CORS
 app = Flask(__name__, static_url_path='', static_folder='staticpages')
 app.secret_key='dataeverywhere'
 # map username to user data
-users = {"admin":("admin","1234")}
+users = {"admin":("admin","1234"), "guest":("guest","2345")}
 #CORS(app)
 
 # https://blog.tecladocode.com/how-to-add-user-logins-to-your-flask-website/
-# land the user back to the login page
-
 @app.route('/')
-def index():
-    if 'username' in session:
-        return 'Logged in as %s' % escape(session['username']) +\
-            '<br><a href="'+'/index.html'+'">home</a>' +\
-             '<br><a href="'+url_for('admin')+'">Admin</a>'
+def home():
 
-    return 'You are not logged in' +\
-        '<br><a href="'+'/index.html'+'">home</a>'
-
-
-@app.route('/admin')
-def admin():
-    if not 'username' in session:
-        return redirect(url_for('login'))
-    
-    return 'welcome ' + session['username'] +\
-        '<br><a href="'+url_for('logout')+'">logout</a>'
-
-    #return render_template("home.html", name=session.get("username", "Unknown"))
+    return render_template("home.html", name=session.get("username", "Unknown"))
 
 
 
@@ -46,17 +27,32 @@ def login():
 
         if username in users and users[username][1] == password:
             session['username'] = username
-            return redirect(url_for('admin'))
+            return redirect(url_for('home'))
     return render_template("login.html")
 	
    
+# registering users. If username does not already exist, add to the dictionary
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username not in users:
+            users[username] = (username, password)
+    return render_template("register.html")
+
 # implement logout
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect('/index.html')
-    return redirect(url_for('index'))
+    return redirect(url_for("home"))
 
+@app.route('/data')
+def getData():
+    if not 'username' in session:
+        abort(401)
+    return '{"data":"all here"}'
 
 @app.route('/clear')
 def clear():
@@ -76,52 +72,26 @@ def clear():
 #get all packages - The list of packages are returned from the open data portal api.
 @app.route('/packages_load',methods=['GET'])
 def loadPackages():
-
-    if not 'username' in session:
-        #abort(401)
-        return redirect(url_for('restricted'))
-        
-    elif 'username' in session:
-        openDAO.truncateDatasetsTable()
-        openDAO.loadDatasetsTable()
-        return "The dataset_list table has been loaded from Irish Open data portal "
+    
+    openDAO.truncateDatasetsTable()
+    #print("cleared dataset_list table")
+    openDAO.loadDatasetsTable()
+    return "The dataset_list table has been loaded from Irish Open data portal "
 
 @app.route('/tags_load',methods=['GET'])
 def loadTags():
-    if not 'username' in session:
-        return redirect(url_for('login'))
-
     # clear table if already populated so it is not duplicated
-    elif 'username' in session:
-        openDAO.truncateTagsTable()
-        openDAO.loadTagsTable()
-        return "The tag_list table has been loaded from Irish Open data portal " +\
-        '<br><a href="'+url_for('logout')+'">logout</a>' +\
-        '<br><a href="'+url_for('index')+'">index</a>'
-
-
+    openDAO.truncateTagsTable()
+    openDAO.loadTagsTable()
+    return "The tag_list table has been loaded from Irish Open data portal "
 
 
 @app.route('/orgs_load', methods=['GET'])
 def loadOrgs():
-    if 'username' in session:
     # clear table if already populated so it is not duplicated
-        openDAO.truncateOrgsTable()
-        openDAO.loadOrgsTable()
-        return "The org_list table has been loaded from Irish Open data portal "
-
-    elif not 'username' in session:
-        #abort(401)
-        return redirect(url_for('login'))
-
-
-@app.route('/admin',methods=['GET'])
-def adminOnly():
-    if 'username' in session:
-        return redirect(url_for('home'))
-    elif not 'username' in session:
-        return redirect(url_for('login'))
-
+    openDAO.truncateOrgsTable()
+    openDAO.loadOrgsTable()
+    return "The org_list table has been loaded from Irish Open data portal "
 
 ## the tag route
 
@@ -239,17 +209,9 @@ def findById(id):
 
 #@app.route('/deleteresources/<string:id>', methods=['GET','PUT','DELETE'])
 @app.route('/deleteresources/<string:id>', methods=['DELETE'])
-
 def deleteResource(id):
-    # this will only delete from the database if the user admin is logged in
-    if 'username' in session:
-   
-    
-        dataDAO.deleteResource(id)
-        return jsonify({"done":True})
-    
-    else:
-        abort(401)
+    dataDAO.deleteResource(id)
+    return jsonify({"done":True})
 
 
 # update is NOT working yet, COME BACK TO THIS
