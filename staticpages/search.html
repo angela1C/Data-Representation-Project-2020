@@ -41,11 +41,20 @@
                   <li class="nav-item">
                     <a class="nav-link" href="searchResources.html">External Search</a>
                   </li>
+                </ul>
+                <ul class="navbar-nav ml-auto" >
+
+               
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin">Login</a>
+                  </li>
+
+                </ul>
                  
                   
                                       
 
-                </ul>
+                
               </div>
             </div>
           </nav>
@@ -53,18 +62,25 @@
 
 
 
-<div class="container">   
+<div class="container small">   
   <div class="jumbotron">
     <div class="text-center">
       <h1>Irish Open Datasets</h1>
       <p> The database contains some links to dataset resources from where the dataset can be accessed or downloaded.
         The datasets on the Irish open data portal at data.gov.ie are in a variety of formats including csv, json-stat, JSON, px, API etc.
-        You can search for a link to a dataset resource here. Enter your search query in the form below. You can also search by the dataset resource id.
+        You can search for a link to a dataset resource here.<br/>
+        Enter your search query in the form below. <br/>
+        The data returned comes from a table in the database that was populated by a call to the package_search api at <a href="data.gov.ie">data.gov.ie</a>
+        If there no results returned, you can trigger a call to this api in the <a href="searchResources.html">External</a> search page. Then come back here to this page.</br><br/>
+
+        If you have the actual dataset Id, you can use this to search. For example '00e6465a-313e-41f9-9a1f-18b49e838dca'.
         <p>
-        You can delete a record from the table. </br>
-        <i>Only an admin user can delete a record from the database</i>
-        You can click on a link to a dataset but please note that this may begin downloading data so proceed with caution.
-        Some of these datasets are very large.
+        Note that the table may be quite wide as it contains the full url to a dataset.<br/>
+        
+        You can also click on a link to a dataset but please note that this may begin downloading data so proceed with caution!.
+        Some of these datasets are very large.<br/>
+
+        To delete a record from the database, click the red button for that record. Only a logged in admin user can delete a record from the database.
       </p>
 
         
@@ -99,19 +115,15 @@
   </div>
   </div>
 
-  <div class="container" "text-center">
 
-    Admin users can login using the link  <a href="/login">Login</a>
 
-  </div>
-
-  <div id="search-resources" style="display:hide">
+  <div id="search-resources">
 
     <div class="table-responsive">
-        <table id="resourcesTable" class="table-sm small vertical-align: middle;">
+        <table id="resourcesTable" class="table table-sm table-striped table-condensed vertical-align: left;">
             <thead class="thead-dark">
             <tr>
-                <th>Name</th><th style="width:1px; white-space:wrap;">Description</th><th scope="col">Id</th><th scope="col">Format</th><th scope="col">Created</th><th scope="col">package_id</th><th scope="col">URL</th><th>Delete</th><th>Update</th>
+                <th scope="col">Name</th><th style="width:1px; white-space:wrap;">Description</th><th scope="col">Id</th><th scope="col">Format</th><th scope="col">Created</th><th scope="col">package_id</th><th scope="col">URL</th><th scope="col">Delete</th>
             </tr>
             </thead>
             
@@ -157,7 +169,7 @@
             //query = getQueryFromForm().package_name
             $.ajax({
                 
-                "url": host+"/dataset_resources_query/" + "%" + encodeURI(query) + "%",
+                "url": host+"/queryresources/" + "%" + encodeURI(query) + "%",
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",
@@ -209,15 +221,14 @@
         var cell7 = rowElement.insertCell(6);
         // make the url into a clickable link
         var url = resource.url  
-        //url.anchor = "anchor for link"
+      
         var result = url.link(url)
         
         cell7.innerHTML = result;
 
         var cell8 = rowElement.insertCell(7);
         cell8.innerHTML='<button onclick=doDelete(this) class="btn btn-danger">delete</button>'
-        var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML='<button onclick=doUpdate(this) class="btn btn-warning">update</button>'
+        
         }
 
 
@@ -273,7 +284,7 @@
             
         $.ajax({
            
-            "url": host+"/myresources/" + encodeURI(Id),
+            "url": host+"/resources/" + encodeURI(Id),
             "method":"GET",
             "data":"",
             "dataType": "JSON",

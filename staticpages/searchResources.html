@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Search Resources</title>
+  <title>Search External Resources</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -37,10 +37,16 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link  active" aria-current="page"  href="searchResources.html">External Search</a>
+              </li>                
+            </ul>
+
+            <ul class="navbar-nav ml-auto" >
+
+               
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Login</a>
               </li>
-              
-            
-                              
+
             </ul>
           </div>
         </div>
@@ -50,8 +56,12 @@
 
 <div class="container">
   <div class="jumbotron">
-    On this page you can search for datasets externally.
+    On this page you can trigger a search to the external API if the link to the dataset is not stored in the datasets table in the <a href="/search.html">Search</a> page.
     <p>Enter Tag name, organization name or dataset name</p>
+    This function works best with a organization name or a dataset name.
+    If the search does return any additional results from the API these will be available to view in the <a href="/search.html">Search</a> page.
+    
+
 
   </div>
 
@@ -75,11 +85,7 @@
     
 </div>   
 
-<div class="container" "text-center">
 
-  Admin users can login using the link  <a href="/login">Login</a> <br/>
-
-</div>
     </div>
     
     </body>
@@ -115,8 +121,7 @@
             host = window.location.origin
             //query = getQueryFromForm().package_name
             $.ajax({
-                //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/resources/" + encodeURI(query),
+                "url": host+"/external/" + encodeURI(query),
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",

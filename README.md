@@ -52,11 +52,11 @@ There are three DAO files. The first one `openDAO` contains functions to call th
     * https://data.gov.ie/api/3/action/organization_list is used to retrieve a list of organizations or publishers.
 
 The python script calls the API url using the `requests` library which returns JSON data. This is parsed and sent to the MySQL database. 
-- The server file `application.py` contains three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. 
+- The server file `application.py` contains three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. An `admin` user needs to be logged in to trigger these functions. You can also go  directly to `/admin` to load these tables.
 - The openDAO.py file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
 The calls to the API returns JSON files containing  the lists of organizations or publishers who provide datasets on the open data portal, list of tag words and list of the names of the datasets.
 
-Once the data has been downloaded to the database from data.gov.ie, the JSON data can be viewed in the browser. 
+Once the data has been downloaded to the database from <data.gov.ie>, the JSON data can be viewed in the browser. 
 There are also webpages for viewing and finding tags, publishers or datasets. The links are available in the navigation bar of the webpages. 
 
 ### Tags:
@@ -89,13 +89,13 @@ The `searchTags.html` page is linked to 3 routes in the application server progr
 ### Datasets
 
 There are currently over ten thousand datasets available on the Irish open data portal under various themes such as environment, society, health, economy etc. 
-The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the https://data.gov.ie/api/3/action/package_list. Note this action only returns the names of the datasets and not the actual datasets. A further call to another api is required to get the actual data.
-To get the links to the actual datasets you can call the api using the package_search action with a query parameter. The query paramter can be a tag name, a organization / publisher name or the actual dataset name.
+The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. Note this action only returns the names of the datasets and not the actual datasets. A further call to another api using the action `package_search` is required to retrieve a JSON representation of the dataset. This will return details about the dataset including the dataset format, a description if available, the dataset id, a package id and a URL to the actual dataset. This data is stored in the `datasets` table in the database.
 
+To get the links to the actual datasets you can call the api <https://data.gov.ie/api/3/action/> using the `package_search` action together with a query parameter. The query parameter can be a tag name, a organization / publisher name or the actual dataset name. 
 
-### All
+Any datasets that have been retrieved using the `package_search` api are stored in the datasets table. Therefore this may be empty on first use. To populate this table, the server calls a function in the `searchDAO` file. You can enter a query using the `/external/` route using a query. The query can be a dataset name, an organization name or a tag name. This functionality can also be accessed  using the `External` nav links to at the top of each page. 
 
-
+The list of datasets can be viewed and searched on the `search.html` page. The table contains the URL to the actual dataset and some details about the dataset. An admin user who is logged in can delete a record from the database. A normal user can delete a record from the table but it will not be deleted from the database.
 
 
 ---

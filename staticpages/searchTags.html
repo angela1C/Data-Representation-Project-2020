@@ -38,19 +38,24 @@
               <li class="nav-item">
                 <a class="nav-link" href="searchResources.html">External Search</a>
               </li>
-              
-             
-                              
-                           
+  
+            </ul>
+            <ul class="navbar-nav ml-auto" >
+
+               
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Login</a>
+              </li>
 
             </ul>
+             
           </div>
         </div>
       </nav>
     </div>
 
 
-<div class="container"> 
+<div class="container small text-center"> 
   <div class="jumbotron">
     <p>
     </br>
@@ -67,7 +72,7 @@
         The list of tags is also available in JSON format <a href="/tags">here.</a>
   </div>
 
-    <div id='findTagForm' style="display: block">
+    <div id='findTagForm' style="display: block" class="text-center">
         <p>Enter query to search for tag.</p>
         <input type="hidden" name="id"/><br/>
         <p><input type="text" name="Tag_Name"/><span><button class="btn btn-info" id="getTagsByCharButton" onclick="getTagsByCharAjax()">Find a Tag </button></span></p>

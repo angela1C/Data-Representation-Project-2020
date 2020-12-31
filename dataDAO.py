@@ -31,11 +31,9 @@ class DataDAO:
         db.close()
         print("connection made")
 
-
-## ************************** PART 1 ***********************************************
 ##   *************************** DATASET_LIST table
     # @app.route('/datasets/')
-    def getAllDatasets(self):
+    def getAllDatasetNames(self):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
         sql =  'select * from dataset_list;'
@@ -51,7 +49,7 @@ class DataDAO:
         return returnArray  
 
     # @app.route('/datasets/<string:query>')  
-    def findDatasets(self, query):
+    def findDatasetByName(self, query):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
         sql = "select * from dataset_list where package_name like %s"
@@ -196,22 +194,8 @@ class DataDAO:
             return item
 
 ### *************************  CRUD on DATASETS TABLE    *************************************************            
-
-    # @app.route('/datasetUrls')
-    def getDatasetUrls(self):
-        db = self.getConnection()
-        # https://stackoverflow.com/questions/43796423/python-converting-mysql-query-result-to-json
-        cursor = db.cursor(dictionary=True)
-        sql = "select * from datasets where format in ('csv','json')"
-        cursor.execute(sql,)
-        
-        results = cursor.fetchall()
-        returnArray = []
-        for result in results:
-            returnArray.append(result)   
-        cursor.close()  
-        return returnArray 
-
+# this is separate table to the list of datasets, this is populated from the package_search api call to data.gov.ie
+# see searchDAO file
 
     # @app.route ('/dataset_resources)
     def getAllResources(self):
@@ -243,8 +227,26 @@ class DataDAO:
         
         return result
 
-    # @app.route('/dataset_resources_query/<string:query>')
+    # @app.route('/queryresources/<string:query>')
     def findADataset(self, query):
+        db = self.getConnection()
+        cursor = db.cursor(dictionary=True)
+        sql = "select * from datasets where name like %s"
+        # 
+        values = (query +"%",) 
+        # convert to a tuple 
+        values = tuple(values,)
+        print(f"the values {values}")
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+                   
+        cursor.close()
+
+        return result
+
+
+          # @app.route('/dataset_resources_query/<string:query>')
+    def findDatasets(self, query):
         db = self.getConnection()
         cursor = db.cursor(dictionary=True)
         sql = "select * from datasets where name like %s"
@@ -290,7 +292,20 @@ class DataDAO:
         cursor.close()
 
 
-
+        # @app.route('/datasetUrls')
+    def getDatasetUrls(self):
+        db = self.getConnection()
+        # https://stackoverflow.com/questions/43796423/python-converting-mysql-query-result-to-json
+        cursor = db.cursor(dictionary=True)
+        sql = "select * from datasets where format in ('csv','json')"
+        cursor.execute(sql,)
+        
+        results = cursor.fetchall()
+        returnArray = []
+        for result in results:
+            returnArray.append(result)   
+        cursor.close()  
+        return returnArray 
 
 
 

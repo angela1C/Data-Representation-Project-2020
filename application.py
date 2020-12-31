@@ -12,9 +12,6 @@ app.secret_key='dataeverywhere'
 users = {"admin":("admin","1234")}
 
 
-# https://blog.tecladocode.com/how-to-add-user-logins-to-your-flask-website/
-# land the user back to the login page
-
 @app.route('/')
 def index():
     if 'username' in session:
@@ -22,8 +19,10 @@ def index():
             '<br><a href="'+'/index.html'+'">home</a>' +\
              '<br><a href="'+url_for('admin')+'">Admin</a>'
 
-    return 'You are not logged in' +\
-        '<br><a href="'+'/index.html'+'">home</a>'
+    return 'Welcome to the application. <br/> You are not logged in <br/>' +\
+        'You can search for datasets, publishers of datasets on the Irish open data portal using the links at the top of the home page.<br/>' +\
+        '' +\
+        '<br><a href="'+'/home.html'+'">home</a>'
 
 
 @app.route('/admin')
@@ -31,11 +30,21 @@ def admin():
     if not 'username' in session:
         return redirect(url_for('login'))
     
-    return 'welcome ' + session['username'] +\
-        '<br><a href="'+url_for('logout')+'">logout</a>'
+    return 'Welcome ' + session['username'] +\
+        '<br><a href="'+url_for('logout')+'">logout</a>' +\
+        '<br><a href="'+'/home.html'+'">home</a>' +\
+        '<br/>'+\
+        'Admin user can login to load the tags at <a href="/tags_load">tags_load<a/>,' +\
+        ' the list of datasets at <a href="/packages_load">packages_load<a/> and' +\
+        ' the list of publishers / organizations at <a href="/orgs_load">orgs_load<a/>'
 
-    #return render_template("home.html", name=session.get("username", "Unknown"))
-
+# I have doubled up here so need to delete one.
+@app.route('/admin',methods=['GET'])
+def adminOnly():
+    if 'username' in session:
+        return render_template("/admin.html")
+    elif not 'username' in session:
+        return redirect(url_for('login'))
 
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -47,7 +56,7 @@ def login():
         if username in users and users[username][1] == password:
             session['username'] = username
             return redirect(url_for('admin'))
-    return render_template("login.html")
+    return render_template("/login.html")
 	
    
 # implement logout
@@ -55,7 +64,6 @@ def login():
 def logout():
     session.clear()
     return redirect('/index.html')
-    return redirect(url_for('index'))
 
 
 @app.route('/clear')
@@ -65,26 +73,20 @@ def clear():
 
     return "done" 
 
-#@app.route('/') 
-#def index():
-#   return "welcome!"
 
-## THIS IS POPULATING THE TABLES FROM THE API
-
-# This is coming from openDAO - maybe have admin access to do this
-# Have the tables loaded before the server runs, only admin access then to run it
-#get all packages - The list of packages are returned from the open data portal api.
 @app.route('/packages_load',methods=['GET'])
 def loadPackages():
 
     if not 'username' in session:
         #abort(401)
-        return redirect(url_for('restricted'))
+        return redirect(url_for('login'))
         
     elif 'username' in session:
         openDAO.truncateDatasetsTable()
         openDAO.loadDatasetsTable()
-        return "The dataset_list table has been loaded from Irish Open data portal "
+        return "The dataset_list table has been loaded from Irish Open data portal " +\
+        '<br><a href="'+url_for('logout')+'">logout</a>' +\
+        '<br><a href="/home.html">home</a>'
 
 @app.route('/tags_load',methods=['GET'])
 def loadTags():
@@ -97,7 +99,7 @@ def loadTags():
         openDAO.loadTagsTable()
         return "The tag_list table has been loaded from Irish Open data portal " +\
         '<br><a href="'+url_for('logout')+'">logout</a>' +\
-        '<br><a href="'+url_for('index')+'">index</a>'
+        '<br><a href="/home.html">home</a>'
 
 
 
@@ -108,19 +110,15 @@ def loadOrgs():
     # clear table if already populated so it is not duplicated
         openDAO.truncateOrgsTable()
         openDAO.loadOrgsTable()
-        return "The org_list table has been loaded from Irish Open data portal "
+        return "The org_list table has been loaded from Irish Open data portal " +\
+        '<br><a href="'+url_for('logout')+'">logout</a>' +\
+        '<br><a href="/home.html">home</a>'
 
     elif not 'username' in session:
         #abort(401)
         return redirect(url_for('login'))
 
 
-@app.route('/admin',methods=['GET'])
-def adminOnly():
-    if 'username' in session:
-        return redirect(url_for('home'))
-    elif not 'username' in session:
-        return redirect(url_for('login'))
 
 
 ## the tag route
@@ -169,22 +167,23 @@ def findOrgs(query):
     return jsonify(foundOrgs)
 
 
-# this now reads from the dataset_list table that contains just the package_name returned from the package_search api
-@app.route('/datasets/', methods=['GET'])
+# this reads from the dataset_list table that contains just the package_name returned from the package_search api
+@app.route('/packages/', methods=['GET'])
 
-def getAllDatasets():
-    results = dataDAO.getAllDatasets()
+def getAllDatasetNames():
+    results = dataDAO.getAllDatasetNames()
     return jsonify(results)
 
 # returns all datasets containing the string in the package_name field of dataset_list
-@app.route('/datasets/<string:query>', methods=['GET'])
-def findDatasets(query):
-    foundDatasets = dataDAO.findDatasets(query)
+@app.route('/packages/<string:query>', methods=['GET'])
+def findDatasetByName (query):
+    foundDatasets = dataDAO.findDatasetByName(query)
     if len(foundDatasets) == 0:
         return jsonify({}) , 204
     return jsonify(foundDatasets)
 
-@app.route('/datasets/<int:id>', methods=['GET'])
+# this uses the internal database id, not from the open data portal
+@app.route('/packages/<int:id>', methods=['GET'])
 def findDatasetById(id):
     foundDataset = dataDAO.findDatasetById(id)
     if len(foundDataset) == 0:
@@ -194,7 +193,7 @@ def findDatasetById(id):
 
 #######################################################################
 # show resources / datasets with csv or json datasets       DATASETS table
-@app.route('/datasetUrls', methods=['GET','DELETE'])
+@app.route('/resourceUrls', methods=['GET','DELETE'])
 def findDatasetUrls():
     foundDatasetUrls = dataDAO.getDatasetUrls()
     if len(foundDatasetUrls) == 0:
@@ -202,7 +201,7 @@ def findDatasetUrls():
     return jsonify(foundDatasetUrls)  
 
 # show all datasets in datasets tables  WORKING
-@app.route('/dataset_resources')
+@app.route('/resources')
 def findAllResources():
     foundResource = dataDAO.getAllResources()
     if len(foundResource) == 0:
@@ -211,7 +210,7 @@ def findAllResources():
 
 # find dataset by id. This uses the 36 character id for example "00edfc4d-2083-494c-a466-f748c73fd489"
 # This is the id of the dataset retrieved using the package_search api call to data.gov.ie
-@app.route('/dataset_resources/<string:id>')
+@app.route('/resources/<string:id>', methods=['GET'])
 def findResourceById(id):
     foundResource = dataDAO.findResourceById(id)
     if len(foundResource) == 0:
@@ -221,23 +220,13 @@ def findResourceById(id):
 
 # find dataset by query FIND A DATASET FROM DATASETS WHERE NAME LIKE %S
 # As the id search above also uses a string query, I needed to set up a different route here.
-@app.route('/dataset_resources_query/<string:query>')
+@app.route('/queryresources/<string:query>', methods=['GET'])
 def findDatasetResource(query):
-    foundResource = dataDAO.findADataset(query)
+    foundResource = dataDAO.findDatasets(query)
     if len(foundResource) == 0:
         return jsonify({}) , 204
     return jsonify(foundResource)
 
-# working with id
-@app.route('/myresources/<string:id>', methods=['GET','PUT','DELETE'])
-def findById(id):
-    foundResource = dataDAO.findResourceById(id)
-    if len(foundResource) == 0:
-        return jsonify({}) , 204
-   
-    return jsonify(foundResource)
-
-# DELETE IS WORKING FROM TABLE ON INDEX.HTML
 
 #@app.route('/deleteresources/<string:id>', methods=['GET','PUT','DELETE'])
 @app.route('/deleteresources/<string:id>', methods=['DELETE'])
@@ -254,42 +243,15 @@ def deleteResource(id):
         abort(401)
 
 
-# update is NOT working yet, COME BACK TO THIS
-@app.route('/update_resource/<string:id>', methods=['PUT','POST'])
-def updateResource(id):
-    foundResource =dataDAO.findResourceById(id)
-    if not foundResource:
-        abort(404)
 
-    if not request.json:
-        abort(400)
-
-
-    reqJson = request.json.get('Description')
-    return jsonify
-    if'Description' in reqJson:
-        foundResource['Description'] = reqJson['Description']
-    values=(foundResource['Description'])
-    dataDAO.updateResource(values)
-    return jsonify({"done":True})
-
-    #return jsonify(foundResource)
-
-# The idea is to take a query in by form and send a request to the package_search api to open data portal
-@app.route("/resources")
-def datasetResourceSearch():
-    return "hello"
-
-# HERE! this is working
-### this is using a different route to the same one at the top of this file
 # @app.route('/external_search/<string:query>')
 
-@app.route('/resources/<string:query>',methods=['GET','POST'])
+@app.route('/external/<string:query>',methods=['GET','POST'])
 def findExternalDatasetResource(query):
 
     foundResource = searchDAO.datasetSearch(query)
     
-    return "done indeed"
+    return "done"
 
 
 

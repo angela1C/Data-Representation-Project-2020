@@ -38,19 +38,23 @@
               <li class="nav-item">
                 <a class="nav-link" href="searchResources.html">External Search</a>
               </li>
-              
-              
-                              
-                            
-
  
+            </ul>
+
+            <ul class="navbar-nav ml-auto" >
+
+               
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Login</a>
+              </li>
+
             </ul>
           </div>
         </div>
       </nav>
     </div>
 
-<div class="container">
+<div class="container small">
   <div class="jumbotron">
     There are currently over ten thousand datasets available on the Irish open data portal under various themes.<br/>
     To access the datasets directly you can use the Open Data portal at <a href="https://data.gov.ie">data.gov.ie</a><br/>
@@ -89,13 +93,13 @@
   </div>
 
 
-    <div id='findDatasetForm' style="display: block">
+    <div id='findDatasetForm' style="display: block" class ="text-center">
         
         <input type="hidden" name="id"/>
 
 
         <input type="text" name="package_name" />
-        <span><button id="getDatasetByQueryButton" class="btn btn-info" onclick="queryDatasets()">Query Dataset by name</button></span></br>
+        <span><button id="getDatasetByQueryButton" class="btn btn-info" onclick="queryDatasets()">Query Dataset by name</button></span><br/><br/>
         
     </div>
 
@@ -151,14 +155,14 @@
             //query = getQueryFromForm().package_name
             $.ajax({
                 //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/datasets/" + encodeURI(query),
+                "url": host+"/packages/" + encodeURI(query),
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",
                 
                 "success":function(result){
                     
-                    console.log(result)
+                    //console.log(result)
                     for (dataset of result){
                         addDatasetToTable(dataset)
                     }                  
