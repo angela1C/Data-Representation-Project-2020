@@ -1,26 +1,32 @@
 # DataRepProject
 
+By Angela Carpenter G00376372
+
 This repository contains all the files for my submission for the Big Project assessment for the Data Representation module at GMIT as part of the Higher Diploma in Computing and Data Analytics.
 
-The project involved writing a Flask server program that consumes a REST API and creating a web interface. The project links to the Ireland's open data portal at <https://data.gov.ie>, populates a MySql database with some simple tables, then allows a user to interact with the data stored in the database through a web interface. It also allows the user to requeust additional data from the open data portal. There is some information on the Irish open data portal at the bottom of this readme file.
+The project involved writing a Flask server program that consumes a REST API and creating a web interface. The project links to the Ireland's open data portal at <https://data.gov.ie>, populates a MySql database with some simple tables, then allows a user to interact with the data stored in the database through a web interface. It also allows the user to request additional data from the Irish open data portal. There is some information on the Irish open data portal at the bottom of this readme file and in the [About Irelands Open Data portal](aboutIrelandsOpenDataPortal.md) file attached.
 
 ## This repository contains the following files:
 
-- The instructions for the project in pdf format.
+- The instructions for the project in [pdf](project_description.pdf) format.
 - A Flask server application program named `application.py`.
 - Data access object (DAO) files written in Python that provide an interface to the database.
 - A `requirements.txt` file containing the Python packages required to run the application.
-- A `staticpages` folder containing some html pages that use AJAX calls to the server. Also possibly some other static resources.
+- A `staticpages` folder containing some html pages for the web application that use AJAX calls to the server. 
 - A `dbconfig.py` file
 - A `.gitignore` file
+- An `initdb.sql` file containing the SQL to create the database.
+- A `datasetDAO.py` program for interfacing with the database.
+- An `opendataDAO.py` program for retrieving JSON data from the Irish open data portal using the `tag_list`, `package_list` and `organization_list` actions and interfacing with the database.
+- A `searchDAO.py` program for retrieving JSON data from the open data portal using the `package_search` api action together with a search query parameter.
 
-I have removed additional python files. used in developing this project to keep the repository simple. They are available in a separate repository.
+
+I have removed all additional Python files that were used in developing this project to keep the repository simple. They are still available in a separate repository.
 
 ## Instructions on running the project:
 
 The repository can be downloaded from my Github account at https://github.com/angela1C/DataRepProject
 by clicking the green `Code` button and following the instructions to clone the repo.
-
 
 The `requirements.txt` file contains the Python requirements including `Flask`,`requests` and `python-mysql-connector`.
 
@@ -47,13 +53,13 @@ This will start the application on http://127.0.0.1:5000/. Copy the link into yo
 ## How to use the web application:
 
 There are three DAO files. The first one `openDAO` contains functions to call the <data.gov.ie> open data portal. The API url is https://data.gov.ie/api/3/action/. The three API actions used are `organization_list`, `tag_list` and `package_list`. There are no query parameters required for these 3 api calls.
-    * https://data.gov.ie/api/3/action/package_list is used to retrieve the list of all datasets (known as packages) available on the open data portal.
-    * https://data.gov.ie/api/3/action/tag_list is used to retrieve a list of tags.
-    * https://data.gov.ie/api/3/action/organization_list is used to retrieve a list of organizations or publishers.
+* https://data.gov.ie/api/3/action/package_list is used to retrieve the list of all datasets (known as packages) available on the open data portal.
+* https://data.gov.ie/api/3/action/tag_list is used to retrieve a list of tags.
+* https://data.gov.ie/api/3/action/organization_list is used to retrieve a list of organizations or publishers.
 
 The python script calls the API url using the `requests` library which returns JSON data. This is parsed and sent to the MySQL database. 
 - The server file `application.py` contains three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. An `admin` user needs to be logged in to trigger these functions. You can also go  directly to `/admin` to load these tables.
-- The openDAO.py file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
+- The `openDAO.py` file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
 The calls to the API returns JSON files containing  the lists of organizations or publishers who provide datasets on the open data portal, list of tag words and list of the names of the datasets.
 
 Once the data has been downloaded to the database from <data.gov.ie>, the JSON data can be viewed in the browser. 
@@ -70,7 +76,7 @@ There are also webpages for viewing and finding tags, publishers or datasets. Th
 ### Datasets
 - The list of datasets or packages is available  at `/datasets` in JSON format.
 
-The JSON data can also be viewed be viewed at the routes '/tags' As the tables are quite long, there are separate pages for viewing tags, viewing organizations and viewing the actual dataset names. 
+The JSON data can also be viewed be viewed using the '/datasets' route. 
 
 ### Organizations / Publishers.
 A Publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on this portal.
@@ -82,58 +88,32 @@ There are currently 135 publishers of open data. To view the publishers or searc
 ### Tags
 
 The `searchTags.html` page is linked to 3 routes in the application server program. 
-    * `'/tags/<int:id>'` to find a tag by id
-    * `'/tags/<string:char>'` to find a tag by a search query.
-    * `'/tags'` to find all tags stored in the `tag_list` database table.
+- `'/tags/<int:id>'` to find a tag by id
+- `'/tags/<string:char>'` to find a tag by a search query.
+- `'/tags'` to find all tags stored in the `tag_list` database table.
 
 ### Datasets
 
 There are currently over ten thousand datasets available on the Irish open data portal under various themes such as environment, society, health, economy etc. 
-The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. Note this action only returns the names of the datasets and not the actual datasets. A further call to another api using the action `package_search` is required to retrieve a JSON representation of the dataset. This will return details about the dataset including the dataset format, a description if available, the dataset id, a package id and a URL to the actual dataset. This data is stored in the `datasets` table in the database.
+The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. Note this action only returns the names of the datasets and not the actual datasets. A further call to another api using the action `package_search` is required to retrieve a JSON representation of the dataset. This will return details about the dataset including the dataset format, a description if available, the dataset id, a package id and a URL to the actual dataset. This data is stored in the `datasets` table in the database. This is a different table to the dataset_list table which contains only the dataset or package name as returned by the call to the package_list api.
 
-To get the links to the actual datasets you can call the api <https://data.gov.ie/api/3/action/> using the `package_search` action together with a query parameter. The query parameter can be a tag name, a organization / publisher name or the actual dataset name. 
+To get the links to the actual datasets you can call the api [data.gov.ie/api/action](https://data.gov.ie/api/3/action/) using the `package_search` action together with a query parameter. The query parameter can be a tag name, a organization / publisher name or the actual dataset name. 
 
-Any datasets that have been retrieved using the `package_search` api are stored in the datasets table. Therefore this may be empty on first use. To populate this table, the server calls a function in the `searchDAO` file. You can enter a query using the `/external/` route using a query. The query can be a dataset name, an organization name or a tag name. This functionality can also be accessed  using the `External` nav links to at the top of each page. 
+Any datasets that have been already retrieved using the `package_search` api are stored in the `datasets` table. Therefore this may be empty on first use. To populate this table, the server uses a function in the `searchDAO` file. You can enter a query using the `/external/` route. The query can be a dataset name, an organization name or a tag name. This functionality can also be accessed  using the `External` nav links to at the top of each page and entering a query into the form. 
 
-The list of datasets can be viewed and searched on the `search.html` page. The table contains the URL to the actual dataset and some details about the dataset. An admin user who is logged in can delete a record from the database. A normal user can delete a record from the table but it will not be deleted from the database.
+The list of datasets that have been already retrieved can be viewed and searched on the `search.html` page. The user can enter a search query into the form. This should be in lower case. The `%` can be used as a wildcard to narrow the search. The table returned contains the URL to the actual dataset and some details about the dataset. An admin user who is logged in can delete a record from the database. A normal user can delete a record from the table but it will not be deleted from the database. The table includes the URLs to the datasets. To download a dataset you can navigate to the link in your own browser or clicking on the link. Please note that some of these datasets can be very large.
 
 
 ---
 ## Python Anywhere
 
 While I did manage to briefly get the application hosted on Python Anywhere, it is not currently working properly. I initially used the free tier but quickly ended up in the tarpit!. Therefore I upgraded the account to access the premium services and this allowed me to get the application running and get some of the database tables populated by calling the <data.gov.ie> API. However after trying out some of the functions on the web pages, the application stopped working as I exceeded the max user connections in the connection pool. I do intend to return to this to get it working, at least to get my money's worth! 
-If I do get it working it will be available at [angela1C.pythonanywhere.com](http://angela1c.pythonanywhere.com)
+If I do get it working it will be available at [angela1C.pythonanywhere.com](http://angela1c.pythonanywhere.com).
 
-mkvirtualenv --python=/usr/bin/python3.8 venv
-
+Because connection pooling has been set up to worj with PythonAnywhere, when running the application locally, it is possible that you may need to restart the server if the connection pool gets exhausted. This can be restarted using `flask run`.
 
 
 ---
-
-
-Some references from week 11
-### Database Connections:
-
-pooling in mysql-connector
-
-https://pynative.com/python-database-connection-pooling-with-mysql/
-
-https://overiq.com/mysql-connector-python-101/connection-pooling-using-connector-python/
-
-### sqlalchemy
-
-https://www.sqlalchemy.org/
-
-https://blog.pythonanywhere.com/121/ (using sqlalchemy on pythonanywhere.com)
-
-https://towardsdatascience.com/sqlalchemy-python-tutorial-79a577141a91
-
-
-
-### Sessions
-
-https://www.tutorialspoint.com/flask/flask_sessions.htm
-
 
 ### About the Open Data portal at <https://data.gov.ie>:
 Ireland's open data portal aims at promoting innovation and transparency through the publication of Irish Public Sector data in open, free and reusable formats. 
@@ -146,3 +126,30 @@ The datasets are published in various formats including JSON-STAT, PX, csv forma
 Using the CKAN API you can get JSON-formatted lists of a site’s datasets, groups or other CKAN objects such as a package list, tag list or group list, get a full JSON representation of a dataset, resource or other object and search for packages or resources matching a query. Authorised users such as publishers who can create, update and delete datasets, resources and other objects. There is no authorization required for accessing the data.
 
 To call the CKAN API, post a JSON dictionary in an HTTP POST request to one of the CKAN APIs URLs. The parameters for the API function should be given in the JSON dictionary. CKAN will also return its response in a JSON dictionary.
+The api actions used for this web application are the `package_list`, `tag_list` and `organization_list` as well as the `package_search` action with a query parameter as outlined earlier. There are some other api actions that I did not use for the final application. See [aboutIrelandsOpenDataPortal](aboutIrelandsOpenDataPortal.md) for further information. 
+
+---
+## References
+
+- The primary reference for this project is the lecture notes by Lecturer Andrew Beatty of the Data Representation module at GMIT and the notes and code available at [Data Representation2020](https://github.com/andrewbeattycourseware/dataRepresenation2020)
+
+- The [Irish Open Data portal](https://data.gov.ie)at data.gov.ie
+
+- The [developer's corner](https://data.gov.ie/developer) at data.gov.ie
+- The [developer's resources ](https://data.gov.ie/pages/developers). This provides some information on how to use the API.
+- [Flask Quickstart](https://flask.palletsprojects.com/en/1.1.x/quickstart/#logging) at https://flask.palletsprojects.com
+- [CKAN](https://docs.ckan.org/en/latest/api/) at https://docs.ckan.org
+- [Flask Tutorial](https://www.tutorialspoint.com/flask/index.htm) at https://www.tutorialspoint.com
+- [Introduction to Bootstrap4](https://getbootstrap.com/docs/5.0/getting-started/introduction/) at https://getbootstrap.com
+
+
+
+- [Python Database Connection Pooling with MySQL](https://pynative.com/python-database-connection-pooling-with-mysql/)
+- [Connection Pooling](https://overiq.com/mysql-connector-python-101/connection-pooling-using-connector-python/)
+
+
+
+
+
+
+
