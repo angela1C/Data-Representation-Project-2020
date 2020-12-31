@@ -1,49 +1,53 @@
 # DataRepProject
-A repo with just the relevant files for the project
 
-Here I am copying just the relevant files for the project from my other folder.
+This repository contains all the files for my submission for the Big Project assessment for the Data Representation module at GMIT as part of the Higher Diploma in Computing and Data Analytics.
 
-## This repository contains:
+The project involved writing a Flask server program that consumes a REST API and creating a web interface. The project links to the Ireland's open data portal at <https://data.gov.ie>, populates a MySql database with some simple tables, then allows a user to interact with the data stored in the database through a web interface. It also allows the user to requeust additional data from the open data portal. There is some information on the Irish open data portal at the bottom of this readme file.
+
+## This repository contains the following files:
+
+- The instructions for the project in pdf format.
+- A Flask server application program named `application.py`.
+- Data access object (DAO) files written in Python that provide an interface to the database.
+- A `requirements.txt` file containing the Python packages required to run the application.
+- A `staticpages` folder containing some html pages that use AJAX calls to the server. Also possibly some other static resources.
+- A `dbconfig.py` file
+- A `.gitignore` file
+
+I have removed additional python files. used in developing this project to keep the repository simple. They are available in a separate repository.
 
 ## Instructions on running the project:
 
-## Files contained
+The repository can be downloaded from my Github account at https://github.com/angela1C/DataRepProject
+by clicking the green `Code` button and following the instructions to clone the repo.
+
+
+The `requirements.txt` file contains the Python requirements including `Flask`,`requests` and `python-mysql-connector`.
+
+Activate a virtual environment using the following commands on the command line:
+
+- `python -m venv venv` to create a blank virtual environment with a directory named `venv`.
+
+- `source venv/bin/activate` on Mac/Linux or `.\venv\Scripts\activate.bat` on Windows.
+
+- `pip install -r requirements.txt` to install the file of Python packages.
+
+- `export FLASK_APP=application` to set the server environmental variable. On Windows use `set` instead of `export`. Make sure there are no spaces. 
+
+- `export FLASK_ENV=development` to run in a development environment.
+
+- `flask run` to run the server program. 
+This will start the application on http://127.0.0.1:5000/. Go to your browser 
 
 
 
 
-
-
-- `python -m venv venv`
-
-- `source venv/bin/activate`
-
-- `pip install -r requirements.txt` to load a file of packages. I don't need to do this everytime once the virtual environment has been created
-
-- `export FLASK_APP=application`
-
-- `export FLASK_ENV=development`
-
-- `flask run`
 
 - `deactivate` to leave the virtual environment and go back to using the system wide environment.
+ 
+
 ---
 
-These are the instructions I used for first getting it up and running. 
-On the command line terminal:
-
-- `mkdir webApp`
-- `cd webApp` - I am moving the main files back out of webapp directory
-- `touch .gitignore`
-- `echo /venv > .gitignore`
-- `touch README.md`
-- `python -m venv venv`
-- `source venv/bin/activate`
-- `pip freeze`
-- `pip install flask`
-- `pip freeze > requirements.txt`
-
-The requirements.txt file contains the requirements including `requests` and `python-mysql-connector`
 
 ---
 ## How to use
@@ -80,6 +84,9 @@ The list of datasets are stored in a database table named `dataset_list` which w
 To get the links to the actual datasets you can call the api using the package_search action with a query parameter. The query paramter can be a tag name, a organization / publisher name or the actual dataset name.
 
 
+### All
+
+
 
 
 ---
@@ -91,3 +98,43 @@ I managed to get it hosted on Pythonanywhere. It read in the data from the open 
 The log says: mysql.connector.errors.OperationalError: MySQL Connection not available.
 
 So I will come back and do connection pooling
+
+
+---
+
+
+Some references from week 11
+### Database Connections:
+
+pooling in mysql-connector
+
+https://pynative.com/python-database-connection-pooling-with-mysql/
+
+https://overiq.com/mysql-connector-python-101/connection-pooling-using-connector-python/
+
+### sqlalchemy
+
+https://www.sqlalchemy.org/
+
+https://blog.pythonanywhere.com/121/ (using sqlalchemy on pythonanywhere.com)
+
+https://towardsdatascience.com/sqlalchemy-python-tutorial-79a577141a91
+
+
+
+### Sessions
+
+https://www.tutorialspoint.com/flask/flask_sessions.htm
+
+
+### About the Open Data portal at <https://data.gov.ie>:
+Ireland's open data portal aims at promoting innovation and transparency through the publication of Irish Public Sector data in open, free and reusable formats. 
+
+Open data is information that is collected, produced or paid for by government bodies and made freely available for reuse. Almost all data that is not privacy sensitive can be published as open data with an open licence. The digital economy revolves around data. It can be used to help public adminstration work more efficiently and to improve the quality of their services. It also can be used by businesses to enhance their business models or to open new opportunities. Open data also provides information to citizens on matters that concern them such as local government, public services, public transport scheduling etc.
+
+As of today there are over 10,109 datasets published on the portal by 120 publishers under various themes such as Economy and Finance, Energy, Environment,  Education and Sport, Transport, Science and Technology, Health and more.
+The datasets are published in various formats including JSON-STAT, PX, csv format as well as some txt files, html, JSON and others. Some of the datasets have APIs. While the datasets can be accessed directly through the open data portal, they can also be accessed using an API. The site is built using [CKAN](https://docs.ckan.org/en/latest/api/) which allows developers to write code that interacts with the open data portal. [CKAN](https://ckan.org) *is a powerful data management system that makes data accessible – by providing tools to streamline publishing, sharing, finding and using data*. CKAN is a tool for making open data websites and is used by national and local governments, research institutions and other organisations who collect a lot of data. Data is published in units called "datasets". Datasets contain "metadata" (information about the data) and a number of "resources" which hold the data itself such as csv, excel, XML, PDF. CKAN can store the data internally or as a link with the resource itself being available somewhere else on the web. (On earlier CKAN versions, datasets were called "packages" and is still used in places today). Normally login is not needed to search and find data but is needed for all publishing functions.
+
+Using the CKAN API you can get JSON-formatted lists of a site’s datasets, groups or other CKAN objects such as a package list, tag list or group list, get a full JSON representation of a dataset, resource or other object and search for packages or resources matching a query. Authorised users such as publishers who can create, update and delete datasets, resources and other objects. There is no authorization required for accessing the data.
+
+To call the CKAN API, post a JSON dictionary in an HTTP POST request to one of the CKAN APIs URLs. The parameters for the API function should be given in the JSON dictionary. CKAN will also return its response in a JSON dictionary.
