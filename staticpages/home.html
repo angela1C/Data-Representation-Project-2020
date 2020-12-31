@@ -36,11 +36,12 @@
                     <a class="nav-link" href="searchDatasets.html">Datasets </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="searchResources.html">Resources</a>
-                  </li>
-                  <li class="nav-item">
                     <a class="nav-link" href="search.html">Search</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="searchResources.html">External Search</a>
+                  </li>
+                  
                  
                                   
 
@@ -64,9 +65,15 @@
     According to the website at data.gov.ie, 
     "The concept of Open Data is about making data held by public bodies available and easily accessible online for reuse and redistribution. 
     As public bodies have progressed in areas like eGovernment and data analytics, the potential of data and, in particular, Open Data to help deliver economic, social and democratic benefits has become clearer. The data.gov.ie portal brings these datasets together in a single searchable website."
-    <button id="loginButton" onclick="login()">Login </button>
+
+    
             
     </div>
+
+  </div>
+  <div class="container" "text-center">
+
+    Admin users can login using the link  <a href="/login">Login</a>
 
   </div>
 
@@ -75,255 +82,6 @@
 
 </div>     
 <script>
-// I don't think I will do show and hide buttons, see later...
-function showQuery(){
-    document.getElementById('showQueryButton').style.display="none"
-    document.getElementById('resourcesTable').style.display="none"
-    document.getElementById('findResourcesForm').style.display="block"
-    document.getElementById('doUpdateButton').style.display="block"
-    document.getElementById('doDeleteButton').style.display="none"
-
-}
-
-
-// get tag entered on the form, either by tag id or tag name
-function getQueryFromForm(){
-    var form = document.getElementById('findResourcesForm')
-    var dataset = {}
-    dataset.id = form.querySelector('input[name="id"]').value
-    //dataset.package_id = form.querySelector('input[name="package_id"]').value
-    dataset.name = form.querySelector('input[name="dataset_name"]').value
-    // added additional one for external queries if we don;t have it already in the table
-    dataset.query = form.querySelector('input[name="query_name"]').value
-    dataset.Id = form.querySelector('input[name="Id"]').value
-    dataset.description = form.querySelector('input[name="description"]').value
-    return dataset
-    }
-
-    //+ "%" + encodeURI(query)
-
-    function queryDatasetResources(){
-        // here I am calling the ajax query but also trying to clear the form and the table
-        query = getQueryFromForm().name
-        console.log(query)
-        
-        var tableElement = document.getElementById('resourcesTable')
-        queryResourcesAjax(query)
-        
-    }
-
-    // I set up a new route as it wont allow me search by query using same route as search by id
-    // perhaps because id is also a string query
-    function queryResourcesAjax(query){
-            host = window.location.origin
-            //query = getQueryFromForm().package_name
-            $.ajax({
-                
-                "url": host+"/dataset_resources_query/" + encodeURI(query),
-                "method":"GET",
-                "data":"",
-                "dataType": "JSON",
-                
-                "success":function(result){
-
-                   
-                      for (resource of result){
-                        addResourceToTable(resource)
-                    } 
-  
-                    
-                },
-                "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-        }
-
-
-
-
-    //<th>Url</th><th>Format</th><th>name</th><th>description</th><th>Created</th><th>id</th><th>package_id</th>
-    function addResourceToTable(resource){
-        var tableElement = document.getElementById('resourcesTable')
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',resource.id)
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = resource.name
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = resource.url
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = resource.id
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = resource.description
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = resource.created
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = resource.package_id
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = resource.format
-
-        var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML='<button onclick=doDelete(this) class="btn btn-danger">delete</button>'
-        var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML='<button onclick=doUpdate(this) class="btn btn-warning">update</button>'
-        }
-
-
-
-    function clearForm(){
-        var form = document.getElementById('findDatasetForm')
-        form.querySelector('input[name="id"]').value=''
-        form.querySelector('input[name="package_id"]').value=''
-        form.querySelector('input[name="package_name"]').value=''
-        document.getElementById('packageTable').style.display="none"
-    }   
-      
-
-    function getExternalDatasetResources(){
-        var form = document.getElementById('findResourcesForm')
-        query = getQueryFromForm().query
-        console.log(query)
-        
-        var tableElement = document.getElementById('resourcesTable')
-        queryExternalResourcesAjax(query)
-        
-    }
-
-    // i want this one to call the function to go to external API package_search
-    function queryExternalResourcesAjax(query){
-            host = window.location.origin
-            //query = getQueryFromForm().package_name
-            console.log(JSON.stringify(query))
-            $.ajax({
-                //"url": host+"/datasets/" + "%"  + encodeURI(query),
-                "url": host+"/resources/" + encodeURI(query),
-                "method":"POST",
-                "data":JSON.stringify(query),
-                "dataType": "JSON",
-                contentType: "application/json; charset=utf-8",
-                "success":function(result){
-                    
-                    console.log(result)
-                             
-                    
-                },
-                "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-        }
-
-  function doDelete(r){
-    var tableElement = document.getElementById('resourcesTable');
-    var rowElement = r.parentNode.parentNode;
-    var index = rowElement.rowIndex;
-    deleteResourceAjax(rowElement.getAttribute("Id"));
-    tableElement.deleteRow(index);
-  }      
-  // DELETE IS WORKING
-  function deleteResourceAjax(Id){
-    host = window.location.origin
-    $.ajax({
-                
-                 "url": host+"/deleteresources/" + encodeURI(Id),
-                "method":"DELETE",
-                "data":"",
-                "dataType": "JSON",
-                contentType: "application/json; charset=utf-8",
-                "success":function(result){
-                  console.log(result)
-                },
-                "error":function(xhr,status,error){
-                  console.log("error: "+status+" msg: "+error);
-                }
-
-            });
-          }
-
-    function findById(){
-        // here I am calling the ajax query but also trying to clear the form and the table
-    Id = getQueryFromForm().Id
-    console.log(Id)
-        
-    var tableElement = document.getElementById('resourcesTable')
-    findByIdAjax(Id)
-        
-    }
-
-    // find by id working 
-    function findByIdAjax(Id){
-        host = window.location.origin
-            
-        $.ajax({
-           
-            "url": host+"/myresources/" + encodeURI(Id),
-            "method":"GET",
-            "data":"",
-            "dataType": "JSON",
-                
-            "success":function(result){
-
-                    // will only return a single result
-                      console.log(result)
-                      addResourceToTable(result)
-
-                    
-                },
-            "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-        }
-      
-    function getUpdateFromForm(){
-        var form = document.getElementById('findResourcesForm')
-        var resource = {}
-        resource.Id = form.querySelector('input[name="Id"]').value
-        resource.description = form.querySelector('input[name="description"]').value
-    return resource
-    }
-    // ONLY STARTING ON THIS, WANT TO UPDATE A TABLE ROW INSTEAD OF FORM
-    /// takes the description entered on the form    
-    function doUpdate(){
-        var resource =getUpdateFromForm();
-        console.log("inside DoUpdate")
-        //console.log(resource)
-        var rowElement = document.getElementById(resource.Id) // maybe the Id ??
-        console.log("rowElement")
-        console.log(rowElement)
-        updateResourceAjax(resource)
-        //setResourceInRow(rowElement,resource)
-    
-  }  
-  
-
-  function updateResourceAjax(resource){
-    host = window.location.origin
-    console.log(JSON.stringify(resource));
-    $.ajax({
-                // not sure here whether to use the myresources
-                "url": host+"/update_resource/" + encodeURI(resource.Id),
-                "method":"PUT",
-                "data":JSON.stringify(Id),
-                "dataType": "JSON",
-                contentType: "application/json; charset=utf-8",
-                "success":function(result){
-                  console.log(result)
-                },
-                "error":function(xhr,status,error){
-                  console.log("error: "+status+" msg: "+error);
-                }
-
-            });
-          }
-    // UPDATE  
-    function setResourceInRow(rowElement,resource){
-        //rowElement.cells[3].firstChild.textContent=resource.id
-        rowElement.cell[4].firstChild.textContent=resource.description
-    }
 
 
 </script>   

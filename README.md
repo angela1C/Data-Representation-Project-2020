@@ -37,31 +37,40 @@ Activate a virtual environment using the following commands on the command line:
 - `export FLASK_ENV=development` to run in a development environment.
 
 - `flask run` to run the server program. 
-This will start the application on http://127.0.0.1:5000/. Go to your browser 
+This will start the application on http://127.0.0.1:5000/. Copy the link into your browser. Click the link to access the web interface.
 
-
-
-
+- To stop the server running, use `ctrl` + `c`.
 
 - `deactivate` to leave the virtual environment and go back to using the system wide environment.
  
-
 ---
+## How to use the web application:
 
-
----
-## How to use
-https://data.gov.ie/dataset
-## openDAO
-- The python file `openDAO.py` contains functions to call the data.gov.ie open data portal. The API url is https://data.gov.ie/api/3/action/. The three API actions used are `organization_list`, `tag_list` and `package_list`. There are no query parameters required for these 3 api calls.
+There are three DAO files. The first one `openDAO` contains functions to call the <data.gov.ie> open data portal. The API url is https://data.gov.ie/api/3/action/. The three API actions used are `organization_list`, `tag_list` and `package_list`. There are no query parameters required for these 3 api calls.
     * https://data.gov.ie/api/3/action/package_list is used to retrieve the list of all datasets (known as packages) available on the open data portal.
     * https://data.gov.ie/api/3/action/tag_list is used to retrieve a list of tags.
     * https://data.gov.ie/api/3/action/organization_list is used to retrieve a list of organizations or publishers.
 
-The python script calls the API url using the `requests` library which returns JSON data. This is parsed and sent to the MySQL database. The server file `application.py` has three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. The openDAO.py file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
-The calls to the API returns JSON files containing  of organizations who provide datasets on the open data portal, list of tag words and list of dataset names.
+The python script calls the API url using the `requests` library which returns JSON data. This is parsed and sent to the MySQL database. 
+- The server file `application.py` contains three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. 
+- The openDAO.py file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
+The calls to the API returns JSON files containing  the lists of organizations or publishers who provide datasets on the open data portal, list of tag words and list of the names of the datasets.
 
-Once the data has been downloaded to the database from data.gov.ie, they can be viewed on a webpage. As the tables are quite long, there are separate pages for viewing tags, viewing organizations and viewing the actual dataset names. 
+Once the data has been downloaded to the database from data.gov.ie, the JSON data can be viewed in the browser. 
+There are also webpages for viewing and finding tags, publishers or datasets. The links are available in the navigation bar of the webpages. 
+
+### Tags:
+- The list of  `tags` is available at `/tags` in JSON format. 
+- Select `Tags` from the navigation bar to enter a search for a tag. Without entering a query, you will get a list of all the tags. There are over 8,600 tags so this is a long list. Use the form to narrow the search. The `%` can be used as a wildcard. For example use `a` to find all tags beginning with the letter `a`, use `air` to find all tags beginning with `air`, use `%air` to find all tags containing `air`. Refresh the page if you want to search again as the tags are appended to the end of the table or scroll down the page.
+
+### Organizations / Publishers
+- The list of organizations or publishers is available at `/orgs` in JSON format.
+- Select `Publishers` from the navigation bar to enter a search for a particular publisher of open data. The search function works in the same way as the tags above.
+
+### Datasets
+- The list of datasets or packages is available  at `/datasets` in JSON format.
+
+The JSON data can also be viewed be viewed at the routes '/tags' As the tables are quite long, there are separate pages for viewing tags, viewing organizations and viewing the actual dataset names. 
 
 ### Organizations / Publishers.
 A Publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on this portal.
@@ -92,12 +101,11 @@ To get the links to the actual datasets you can call the api using the package_s
 ---
 ## Python Anywhere
 
+While I did manage to briefly get the application hosted on Python Anywhere, it is not currently working properly. I initially used the free tier but quickly ended up in the tarpit!. Therefore I upgraded the account to access the premium services and this allowed me to get the application running and get some of the database tables populated by calling the <data.gov.ie> API. However after trying out some of the functions on the web pages, the application stopped working as I exceeded the max user connections in the connection pool. I do intend to return to this to get it working, at least to get my money's worth! 
+If I do get it working it will be available at [angela1C.pythonanywhere.com](http://angela1c.pythonanywhere.com)
+
 mkvirtualenv --python=/usr/bin/python3.8 venv
 
-I managed to get it hosted on Pythonanywhere. It read in the data from the open data portal api organization_load successfully but after that I got server errors.
-The log says: mysql.connector.errors.OperationalError: MySQL Connection not available.
-
-So I will come back and do connection pooling
 
 
 ---

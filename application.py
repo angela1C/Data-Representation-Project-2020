@@ -10,7 +10,7 @@ app = Flask(__name__, static_url_path='', static_folder='staticpages')
 app.secret_key='dataeverywhere'
 # map username to user data
 users = {"admin":("admin","1234")}
-#CORS(app)
+
 
 # https://blog.tecladocode.com/how-to-add-user-logins-to-your-flask-website/
 # land the user back to the login page
@@ -170,21 +170,21 @@ def findOrgs(query):
 
 
 # this now reads from the dataset_list table that contains just the package_name returned from the package_search api
-@app.route('/datasets/')
+@app.route('/datasets/', methods=['GET'])
 
 def getAllDatasets():
     results = dataDAO.getAllDatasets()
     return jsonify(results)
 
 # returns all datasets containing the string in the package_name field of dataset_list
-@app.route('/datasets/<string:query>')
+@app.route('/datasets/<string:query>', methods=['GET'])
 def findDatasets(query):
     foundDatasets = dataDAO.findDatasets(query)
     if len(foundDatasets) == 0:
         return jsonify({}) , 204
     return jsonify(foundDatasets)
 
-@app.route('/datasets/<int:id>')
+@app.route('/datasets/<int:id>', methods=['GET'])
 def findDatasetById(id):
     foundDataset = dataDAO.findDatasetById(id)
     if len(foundDataset) == 0:
@@ -194,7 +194,7 @@ def findDatasetById(id):
 
 #######################################################################
 # show resources / datasets with csv or json datasets       DATASETS table
-@app.route('/datasetUrls')
+@app.route('/datasetUrls', methods=['GET','DELETE'])
 def findDatasetUrls():
     foundDatasetUrls = dataDAO.getDatasetUrls()
     if len(foundDatasetUrls) == 0:
@@ -209,7 +209,8 @@ def findAllResources():
         return jsonify({}) , 204
     return jsonify(foundResource)
 
-# find dataset by id        WORKING for id
+# find dataset by id. This uses the 36 character id for example "00edfc4d-2083-494c-a466-f748c73fd489"
+# This is the id of the dataset retrieved using the package_search api call to data.gov.ie
 @app.route('/dataset_resources/<string:id>')
 def findResourceById(id):
     foundResource = dataDAO.findResourceById(id)
@@ -219,6 +220,7 @@ def findResourceById(id):
 
 
 # find dataset by query FIND A DATASET FROM DATASETS WHERE NAME LIKE %S
+# As the id search above also uses a string query, I needed to set up a different route here.
 @app.route('/dataset_resources_query/<string:query>')
 def findDatasetResource(query):
     foundResource = dataDAO.findADataset(query)
@@ -288,41 +290,6 @@ def findExternalDatasetResource(query):
     foundResource = searchDAO.datasetSearch(query)
     
     return "done indeed"
-
-
-
-
-
-# create dataset
-# curl -H "Content-Type:application/json" -X POST -d "{\"Name\":\"Testing creating a dataset\"}" http://127.0.0.1:5000/datasets
-@app.route('/datasets', methods=['POST'])
-def create():
-    global nextId
-    if not request.json:
-        abort(400)
-    
-    dataset = {
-        "id": nextId,
-        "Name": request.json["Name"]
-    }
-    datasets.append(dataset)
-    nextId += 1
-    return jsonify(dataset)
-
-
-#update dataset
-
-@app.route('/datasets/<int:id>', methods=['PUT']) 
-def update(id):
-    return "served by update with id " + str(id)
-
-# delete dataset
-@app.route('/datasets/<int:id>', methods=['DELETE']) 
-def delete(id):
-    return "served by delete with id " + str(id)
-
-# curl -H "Content-Type:application/json" -X PUT -d '{"{Name":"testing1234"}' http://127.0.0.1:5000/datasets/1
-
 
 
 

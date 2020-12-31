@@ -33,11 +33,12 @@
                 <a class="nav-link" href="searchDatasets.html">Datasets </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="searchResources.html">Resources</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="search.html">Search</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="searchResources.html">External Search</a>
+              </li>
+              
             
                               
 
@@ -54,9 +55,25 @@
 <div class="container">
 
   <div class="jumbotron">
-  </br><p>An organization / publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on the portal. There are currently 135 publishers of open data on the portal.
-    To search for a publisher enter a query. To search for all publishers leave blank. To narrow a search or widen a search use a percentage sign as a wildcard.
+  </br><p>An organization / publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on the portal. <br/>
+    There are currently over 120 publishers of open data on the Irish open data portal.
+    To search for all publishers leave blank and click the button. <br/>
+    To search for a particular publisher enter a query in the search form.<br/> 
+    To search 
+    To narrow a search or widen a search use a percentage sign &#37; as a wildcard.
+    For example use `c` to find all publishers beginning with the letter c. 
+    Use `central` to find all publishers that begin with `central` such as the Central Applications Office,
+     the Central Bank of Ireland or the Central Statistics Office. <br/>
+
+     Use &#37;central to include 'statcentral' in the results.<br/>
+
+     The results can be used to search for a dataset in the database using the Search tab above. 
+     If the database does not contain the details for a particular dataset, you can 
+    
   
+  </p>
+  <p>
+    The list of publishers is also available in JSON format <a href="/orgs">here.</a>
   </p>
   
   
@@ -156,7 +173,7 @@ function getAllOrgAjax(){
             
             $.ajax({
                
-                "url": host+"/orgs/" + "%" + encodeURI(query),
+                "url": host+"/orgs/" + encodeURI(query),
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",
