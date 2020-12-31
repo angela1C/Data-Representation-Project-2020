@@ -1,6 +1,6 @@
-# DataRepProject
+# Data Representation Big   Project
 
-By Angela Carpenter G00376372
+By Angela Carpenter
 
 This repository contains all the files for my submission for the Big Project assessment for the Data Representation module at GMIT as part of the Higher Diploma in Computing and Data Analytics.
 
@@ -76,11 +76,11 @@ There are also webpages for viewing and finding tags, publishers or datasets. Th
 ### Datasets
 - The list of datasets or packages is available  at `/datasets` in JSON format.
 
-The JSON data can also be viewed be viewed using the '/datasets' route. 
+- Select `datasets` from the navigation bar to enter a search for a particular dataset. The search function works in the same way as the tags above.
 
 ### Organizations / Publishers.
 A Publisher in data.gov.ie is any Irish Public Sector Body who publishes Open Data on this portal.
-There are currently 135 publishers of open data. To view the publishers or search for a publisher, go to the page `/searchOrgs.html`. This webpage is linked to 3 routes in the application server program which retrieves data from the `org_list` database table.  
+There are over 120 publishers of open data to this portal. To view the publishers or search for a publisher, go to the page `/searchOrgs.html`. This webpage is linked to 3 routes in the application server program which retrieves data from the `org_list` database table.  
     * `/orgs` to get all organizations
     * `'/orgs/<string:query>'` to find an organization by search query
     *  `'/orgs/<int:id>'` to find an organisation by id.  
@@ -95,32 +95,31 @@ The `searchTags.html` page is linked to 3 routes in the application server progr
 ### Datasets
 
 There are currently over ten thousand datasets available on the Irish open data portal under various themes such as environment, society, health, economy etc. 
-The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. Note this action only returns the names of the datasets and not the actual datasets. A further call to another api using the action `package_search` is required to retrieve a JSON representation of the dataset. This will return details about the dataset including the dataset format, a description if available, the dataset id, a package id and a URL to the actual dataset. This data is stored in the `datasets` table in the database. This is a different table to the dataset_list table which contains only the dataset or package name as returned by the call to the package_list api.
+The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. This action only returns the names of the datasets and not the actual dataset or a link to the dataset. A further call to another api using the action `package_search` is required to retrieve a JSON representation of the dataset. This will return details about the dataset including the dataset format, a description if available, the dataset id, a package id and a URL to the actual dataset. This data is stored in the `datasets` table in the database. 
 
 To get the links to the actual datasets you can call the api [data.gov.ie/api/action](https://data.gov.ie/api/3/action/) using the `package_search` action together with a query parameter. The query parameter can be a tag name, a organization / publisher name or the actual dataset name. 
 
 Any datasets that have been already retrieved using the `package_search` api are stored in the `datasets` table. Therefore this may be empty on first use. To populate this table, the server uses a function in the `searchDAO` file. You can enter a query using the `/external/` route. The query can be a dataset name, an organization name or a tag name. This functionality can also be accessed  using the `External` nav links to at the top of each page and entering a query into the form. 
 
-The list of datasets that have been already retrieved can be viewed and searched on the `search.html` page. The user can enter a search query into the form. This should be in lower case. The `%` can be used as a wildcard to narrow the search. The table returned contains the URL to the actual dataset and some details about the dataset. An admin user who is logged in can delete a record from the database. A normal user can delete a record from the table but it will not be deleted from the database. The table includes the URLs to the datasets. To download a dataset you can navigate to the link in your own browser or clicking on the link. Please note that some of these datasets can be very large.
+The list of datasets that have been already retrieved can be viewed and searched on the `search.html` page. The user can enter a search query into the form. This should be in lower case. The `%` can be used as a wildcard to narrow the search. The table returned contains the URL to the actual dataset and some details about the dataset. An admin user who is logged in can delete a record from the database. A normal user can delete a record from the table but it will not be deleted from the database. The table includes the URLs to the datasets. To download a dataset you can navigate to the link in your own browser or clicking on the link. Please be aware that some of these datasets can be very large.
 
 
 ---
 ## Python Anywhere
 
-While I did manage to briefly get the application hosted on Python Anywhere, it is not currently working properly. I initially used the free tier but quickly ended up in the tarpit!. Therefore I upgraded the account to access the premium services and this allowed me to get the application running and get some of the database tables populated by calling the <data.gov.ie> API. However after trying out some of the functions on the web pages, the application stopped working as I exceeded the max user connections in the connection pool. I do intend to return to this to get it working, at least to get my money's worth! 
+While I did manage to briefly get the application hosted on Python Anywhere, it is not currently working properly. I initially used the free tier but quickly ended up in the tarpit. Therefore I upgraded the account to access the premium services and this allowed me to get the application running and get some of the database tables populated by calling the <data.gov.ie> apis. However after trying out some of the functions on the web pages, the application stopped working as I had exceeded the max user connections in the connection pool. I do intend to return to this to get it working, at least to get my money's worth! Hopefully in the next few days.
 If I do get it working it will be available at [angela1C.pythonanywhere.com](http://angela1c.pythonanywhere.com).
 
-Because connection pooling has been set up to worj with PythonAnywhere, when running the application locally, it is possible that you may need to restart the server if the connection pool gets exhausted. This can be restarted using `flask run`.
-
+Because connection pooling has been set up to work with PythonAnywhere, when running the application locally, it is possible that you may need to restart the server if the connection pool gets exhausted. This can be restarted using `flask run`. 
 
 ---
 
 ### About the Open Data portal at <https://data.gov.ie>:
 Ireland's open data portal aims at promoting innovation and transparency through the publication of Irish Public Sector data in open, free and reusable formats. 
 
-Open data is information that is collected, produced or paid for by government bodies and made freely available for reuse. Almost all data that is not privacy sensitive can be published as open data with an open licence. The digital economy revolves around data. It can be used to help public adminstration work more efficiently and to improve the quality of their services. It also can be used by businesses to enhance their business models or to open new opportunities. Open data also provides information to citizens on matters that concern them such as local government, public services, public transport scheduling etc.
+Open data is information that is collected, produced or paid for by government bodies and made freely available for reuse. Almost all data that is not privacy sensitive can be published as open data with an open licence. The digital economy revolves around data. It can be used to help public administration work more efficiently and to improve the quality of their services. It also can be used by businesses to enhance their business models or to open new opportunities. Open data also provides information to citizens on matters that concern them such as local government, public services, public transport scheduling etc.
 
-As of today there are over 10,109 datasets published on the portal by 120 publishers under various themes such as Economy and Finance, Energy, Environment,  Education and Sport, Transport, Science and Technology, Health and more.
+As of today there are over 10,000 datasets published on the portal by 120 publishers under various themes such as Economy and Finance, Energy, Environment,  Education and Sport, Transport, Science and Technology, Health and more.
 The datasets are published in various formats including JSON-STAT, PX, csv format as well as some txt files, html, JSON and others. Some of the datasets have APIs. While the datasets can be accessed directly through the open data portal, they can also be accessed using an API. The site is built using [CKAN](https://docs.ckan.org/en/latest/api/) which allows developers to write code that interacts with the open data portal. [CKAN](https://ckan.org) *is a powerful data management system that makes data accessible – by providing tools to streamline publishing, sharing, finding and using data*. CKAN is a tool for making open data websites and is used by national and local governments, research institutions and other organisations who collect a lot of data. Data is published in units called "datasets". Datasets contain "metadata" (information about the data) and a number of "resources" which hold the data itself such as csv, excel, XML, PDF. CKAN can store the data internally or as a link with the resource itself being available somewhere else on the web. (On earlier CKAN versions, datasets were called "packages" and is still used in places today). Normally login is not needed to search and find data but is needed for all publishing functions.
 
 Using the CKAN API you can get JSON-formatted lists of a site’s datasets, groups or other CKAN objects such as a package list, tag list or group list, get a full JSON representation of a dataset, resource or other object and search for packages or resources matching a query. Authorised users such as publishers who can create, update and delete datasets, resources and other objects. There is no authorization required for accessing the data.
@@ -131,7 +130,7 @@ The api actions used for this web application are the `package_list`, `tag_list`
 ---
 ## References
 
-- The primary reference for this project is the lecture notes by Lecturer Andrew Beatty of the Data Representation module at GMIT and the notes and code available at [Data Representation2020](https://github.com/andrewbeattycourseware/dataRepresenation2020)
+- The primary references for this project are the lecture notes by Lecturer Andrew Beatty of the Data Representation module at GMIT and the notes and code available on various topics at [Data Representation2020](https://github.com/andrewbeattycourseware/dataRepresenation2020)
 
 - The [Irish Open Data portal](https://data.gov.ie)at data.gov.ie
 
@@ -141,10 +140,10 @@ The api actions used for this web application are the `package_list`, `tag_list`
 - [CKAN](https://docs.ckan.org/en/latest/api/) at https://docs.ckan.org
 - [Flask Tutorial](https://www.tutorialspoint.com/flask/index.htm) at https://www.tutorialspoint.com
 - [Introduction to Bootstrap4](https://getbootstrap.com/docs/5.0/getting-started/introduction/) at https://getbootstrap.com
+- [w3Schools](https://www.w3schools.com) tutorials at www.w3schools.com
 
 
-
-- [Python Database Connection Pooling with MySQL](https://pynative.com/python-database-connection-pooling-with-mysql/)
+- [Python Database Connection Pooling with MySQL](https://pynative.com/python-database-connection-pooling-with-mysql)
 - [Connection Pooling](https://overiq.com/mysql-connector-python-101/connection-pooling-using-connector-python/)
 
 

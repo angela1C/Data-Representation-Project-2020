@@ -16,7 +16,7 @@ users = {"admin":("admin","1234")}
 def index():
     if 'username' in session:
         return 'Logged in as %s' % escape(session['username']) +\
-            '<br><a href="'+'/index.html'+'">home</a>' +\
+            '<br><a href="'+'/home.html'+'">home</a>' +\
              '<br><a href="'+url_for('admin')+'">Admin</a>'
 
     return 'Welcome to the application. <br/> You are not logged in <br/>' +\
@@ -63,7 +63,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect('/index.html')
+    return redirect('/home.html')
 
 
 @app.route('/clear')

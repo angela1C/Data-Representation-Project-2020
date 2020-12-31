@@ -23,9 +23,7 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
-                  </li>
+                  
                   <li class="nav-item">
                     <a class="nav-link" href="searchTags.html">Tags</a>
                   </li>
@@ -51,10 +49,7 @@
 
                 </ul>
                  
-                  
-                                      
 
-                
               </div>
             </div>
           </nav>
@@ -64,38 +59,32 @@
 
 <div class="container small">   
   <div class="jumbotron">
-    <div class="text-center">
-      <h1>Irish Open Datasets</h1>
-      <p> The database contains some links to dataset resources from where the dataset can be accessed or downloaded.
-        The datasets on the Irish open data portal at data.gov.ie are in a variety of formats including csv, json-stat, JSON, px, API etc.
-        You can search for a link to a dataset resource here.<br/>
-        Enter your search query in the form below. Use lowercase letters. Use percentage sign &#37; as a wildcard. <br/>
-        The data returned comes from a table in the database that was populated by a call to the package_search api at <a href="data.gov.ie">data.gov.ie</a>
-        If there no results returned, you can trigger a call to this api in the <a href="searchResources.html">External</a> search page. Then come back here to this page.</br><br/>
 
-        If you have the actual dataset Id, you can use this to search. For example '00e6465a-313e-41f9-9a1f-18b49e838dca'.
-        <p>
+      <p> The database contains some links to dataset resources from where the dataset can be accessed or downloaded.
+        The datasets on Ireland's Open Data Portal are available in a variety of formats including csv, json-stat, JSON, px, API etc.
+        You can search for a link to a dataset resource using the search form below. <br/>
+        Please use lowercase letters. The percentage sign &#37; can be used as a wildcard. <br/>
+      </p>
+      <p>
+
+        If there no matching results returned, you can request data from <a href="data.gov.ie">data.gov.ie</a> using the 'package_search' api action call with a query parameter using the form on the <a href="searchResources.html">External Search</a> page. <br/>
+      
+        You can then come back here to this page to see if any data was returned. If there are no matching results try with a different query parameter or widen the search.</br>
         Note that the table may be quite wide as it contains the full url to a dataset.<br/>
-        
+
         You can also click on a link to a dataset but please note that this may begin downloading data so proceed with caution!.
         Some of these datasets are very large.<br/>
-
-        To delete a record from the database, click the red button for that record. Only a logged in admin user can delete a record from the database.
       </p>
-
+        <p>
+          To delete a record from the database, click the red button for that record. Only a logged in admin user can delete a record from the database.
+        If you have the actual dataset Id, you can use this to search. For example '00e6465a-313e-41f9-9a1f-18b49e838dca'.
+        </p>
         
-
-
-
-
-      </p> 
-
-      
-    
-     </div>
+     
+    </div> 
      
 
-  </div> 
+ 
 
   <div class="container">
 
@@ -105,7 +94,7 @@
 
       <p>
       <input type="text" name="dataset_name" placeholder="rain"/>
-      <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()">Find Dataset Resources</button></span></br>
+      <span><button id="getDatasetResourcessByQueryButton" onclick="queryDatasetResources()"> Find Dataset Resources</button></span></br>
     </p>
     
       <p>
@@ -123,7 +112,7 @@
         <table id="resourcesTable" class="table table-sm table-striped table-condensed vertical-align: left;">
             <thead class="thead-dark">
             <tr>
-                <th scope="col">Name</th><th style="width:1px; white-space:wrap;">Description</th><th scope="col">Id</th><th scope="col">Format</th><th scope="col">Created</th><th scope="col">package_id</th><th scope="col">URL</th><th scope="col">Delete</th>
+                <th scope="col">Name</th><th style="width:1px; white-space:wrap;">Description</th><th scope="col">Id</th><th scope="col">Format</th><th scope="col">URL</th><th scope="col">Delete</th><th scope="col">Created</th><th scope="col">package_id</th>
             </tr>
             </thead>
             
@@ -132,10 +121,8 @@
        
 
 </div>     
-    
-           
-
-</div>     
+</div>  
+              
 <script>
 
   function getQueryFromForm(){
@@ -169,7 +156,7 @@
             //query = getQueryFromForm().package_name
             $.ajax({
                 
-                "url": host+"/queryresources/" + "%" + encodeURI(query) + "%",
+                "url": host+"/queryresources/" +  encodeURI(query) + "%",
                 "method":"GET",
                 "data":"",
                 "dataType": "JSON",
@@ -203,33 +190,34 @@
         var cell1 = rowElement.insertCell(0);
         cell1.innerHTML = resource.name.small()
 
-        // could try make this a link
         var cell2 = rowElement.insertCell(1);
         cell2.innerHTML = resource.description.small();
-        
   
         var cell3 = rowElement.insertCell(2);
-      
-        
         cell3.innerHTML = resource.id.small();
+
         var cell4 = rowElement.insertCell(3);
         cell4.innerHTML = resource.format.small()
+        
+        
         var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = resource.created.small();
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = resource.package_id.small()
-        var cell7 = rowElement.insertCell(6);
         // make the url into a clickable link
         var url = resource.url  
-      
         var result = url.link(url)
-        
-        cell7.innerHTML = result;
+        cell5.innerHTML = result;
 
-        var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML='<button onclick=doDelete(this) class="btn btn-danger">delete</button>'
+        var cell6 = rowElement.insertCell(5);
+        cell6.innerHTML='<button onclick=doDelete(this) class="btn btn-danger">delete</button>'
         
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = resource.created.small();
+
+        var cell8 = rowElement.insertCell(7 );
+        cell8.innerHTML = resource.package_id.small()
+
         }
+
+
 
 
 

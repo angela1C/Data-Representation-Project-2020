@@ -20,9 +20,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Home</a>
-              </li>
+              
               <li class="nav-item">
                 <a class="nav-link" href="searchTags.html">Tags</a>
               </li>
@@ -58,9 +56,13 @@
   <div class="jumbotron">
     On this page you can trigger a search to the external API if the link to the dataset is not stored in the datasets table in the <a href="/search.html">Search</a> page.
     <p>Enter Tag name, organization name or dataset name</p>
-    This function works best with a organization name or a dataset name.
-    If the search does return any additional results from the API these will be available to view in the <a href="/search.html">Search</a> page.
     
+    This function works best with a organization name or a dataset name. Not all tags work and some do appear to be case sensitive.
+    If the search does return any additional results from the API these will be available to view in the <a href="/search.html">Search</a> page.
+    The api call uses the https://data.gov.ie/api/3/action/package_search? api with a query parameter.
+    You can also trigger this function by going directly to the <a href="/external">external</a> route and enter a search query.
+    
+  
 
 
   </div>
