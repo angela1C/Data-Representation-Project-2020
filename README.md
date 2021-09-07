@@ -23,9 +23,9 @@ The project involved writing a Flask server program that consumes a REST API and
 
 All additional Python files that were used in developing this project to keep the repository simple have been removed but are available in a separate repository.
 
-## Instructions on running the project:
+## Instructions on running the web application:
 
-The repository can be downloaded from my Github account at https://github.com/angela1C/DataRepProject
+The repository can be downloaded from my Github account at https://github.com/angela1C/Data-Representation-Project-2020.
 by clicking the green `Code` button and following the instructions to clone the repo.
 
 The `requirements.txt` file contains the Python requirements including `Flask`,`requests` and `python-mysql-connector`.
@@ -50,28 +50,31 @@ This will start the application on http://127.0.0.1:5000/. Copy the link into yo
 - `deactivate` to leave the virtual environment and go back to using the system wide environment.
  
 ---
+
 ## How to use the web application:
 
+### Retrieving data from the <https://data.gov.ie>.
 There are three DAO files. 
-1. `openDAO` calls the  <data.gov.ie> open data portal using the three `_list` actions to retrieve the lists of tags, publishers and dataset names.
-2. `dataDAO` allows the user to interact with any of the database tables. 
-3. `searchDAO` calls the <data.gov.ie> open data portal using the `package_search` action together with a query parameter in response to a request from the user. This file could be developed further to allow the user to call the api using other api action calls that also require parameters.
+1. `openDAO.py` calls the  Irish open data portal at <https://data.gov.ie>  using three (CKAN) `_list` API actions to retrieve the lists of tags, publishers and dataset names and populate the MySQL database tables.
+2. `dataDAO.py` allows the user to perform CRUD operations on any of the MySQL database tables.  The user can  retrieve records for datasets, tags or tags matching a query. Authorised users can update or delete records.
+3. `searchDAO.py` calls the Irish open data portal at <https://data.gov.ie>  using the `package_search` API action together with query parameters in response to a request from the user. This allows a user to find more specific details about a dataset including the URL from where the dataset itself can be retrieved.
 
 
-The `openDAO` file contains functions to call the <data.gov.ie> open data portal. The API url is https://data.gov.ie/api/3/action/. The three API actions used are `organization_list`, `tag_list` and `package_list`. There are no query parameters required for these 3 api calls.
-* https://data.gov.ie/api/3/action/package_list is used to retrieve the list of all datasets (known as packages) available on the open data portal.
-* https://data.gov.ie/api/3/action/tag_list is used to retrieve a list of tags.
-* https://data.gov.ie/api/3/action/organization_list is used to retrieve a list of organizations or publishers.
+The `openDAO.py` file contains functions to call the <https://data.gov.ie> open data portal. The API url is https://data.gov.ie/api/3/action/. The three API actions used are `organization_list`, `tag_list` and `package_list`. There are no query parameters required for these 3 API calls.
+  * <https://data.gov.ie/api/3/action/package_list> is used to retrieve the list of all datasets (known as packages) available on the open data portal.
+  * <https://data.gov.ie/api/3/action/tag_list> is used to retrieve a list of tags.
+  * <https://data.gov.ie/api/3/action/organization_list> is used to retrieve a list of organizations or publishers.
 
-The python script calls the API url using the `requests` library which returns JSON data. This is parsed and sent to the MySQL database. 
+The Python script `openDAO.py` calls the API url using Python's `requests` library which returns JSON data. This is parsed and sent to the MySQL database. 
 - The server file `application.py` contains three routes that can trigger these functions at  `/orgs_load`, `/tags_load` and  `/dataset_load`. An `admin` user needs to be logged in to trigger these functions. You can also go  directly to the `/admin` route to load these tables.
-- The `openDAO.py` file also contains code to truncate the database tables before calling the api so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
-The calls to the API returns JSON files containing  the lists of organizations or publishers who provide datasets on the open data portal, list of tag words and list of the names of the datasets.
+- The `openDAO.py` file also contains code to truncate the database tables before calling the API so as to avoid duplicate data being stored in the table.  The tables are named `org_list`, `tag_list` and `dataset_list`.
+The calls to the API returns JSON files containing  the lists of organizations (publishers) who provide datasets on the open data portal, list of tag words and list of the names of the datasets.
 
-Once the data has been downloaded to the database from <data.gov.ie>, the JSON data can be viewed in the browser. 
+Once the data has been downloaded to the database from <https://data.gov.ie>, the JSON data can be viewed in the browser. 
 There are also webpages for viewing and finding tags, publishers or datasets. The links are available in the navigation bar of the webpages. 
 
-#### Tags:
+
+### Search for 'Tags' relating to a dataset:
 - The list of  `tags` is available at `/tags` in JSON format. 
 - Select `Tags` from the navigation bar to enter a search for a tag. Without entering a query, you will get a list of all the tags. There are over 8,600 tags so this is a long list. Use the form to narrow the search. The `%` can be used as a wildcard. For example use `a` to find all tags beginning with the letter `a`, use `air` to find all tags beginning with `air`, use `%air` to find all tags containing `air`. Refresh the page if you want to search again as the tags are appended to the end of the table or scroll down the page.
 
@@ -81,9 +84,9 @@ The `searchTags.html` page is linked to 3 routes in the application server progr
 - `'/tags/<string:char>'` to find a tag by a search query.
 - `'/tags'` to find all tags stored in the `tag_list` database table.
 
-#### Organizations / Publishers
+### Search for Organizations / Publishers of datasets
 
-A Publisher on the  <data.gov.ie> is any Irish Public Sector Body who publishes Open Data on this portal.
+A Publisher on the  Irish open data portal is any Irish Public Sector Body who publishes Open Data on this portal.
 There are over 120 publishers of open data to this portal.
 
 
@@ -93,7 +96,7 @@ There are over 120 publishers of open data to this portal.
     *  `'/orgs/<int:id>'` to find an organisation by id. 
 
 
-#### Datasets / Packages
+### Search for the metadata of Datasets / Packages
 - The list of datasets (also known as packages) is available  at `/packages` in JSON format.
 The `searchPackages.html` page is linked to 3 routes in the application server program. 
 - `'/packages/<int:id>'` to find a tag by id
@@ -104,7 +107,7 @@ The `searchPackages.html` page is linked to 3 routes in the application server p
 
 
 
-### Getting links to datasets:
+### Getting URLs to the actual datasets
 
 There are currently over ten thousand datasets available on the Irish open data portal under various themes such as environment, society, health, economy etc.  The list of datasets are stored in a database table named `dataset_list` which was retrieved by calling the <https://data.gov.ie/api/3/action/package_list>. This action only returns the names of the datasets and not the actual dataset or a link to the dataset. 
 
@@ -126,16 +129,18 @@ To access an actual dataset you can navigate to the link in your own browser or 
 
 
 ---
+
 ## Python Anywhere
 
-While I did manage to briefly get the application hosted on Python Anywhere, it is not currently working properly. I initially used the free tier but quickly ended up in the tarpit. I upgraded the account to access the premium services and this allowed me to get the application running and get some of the database tables populated by calling the <data.gov.ie> apis. However after trying out some of the functions on the web pages, the application stopped working as I had exceeded the max user connections in the connection pool. (I do intend to return to this to get it working, at least to get my money's worth but also it would be nice to be able to do it! Hopefully in the next few days.)
-If I do get it working it will be available at [angela1C.pythonanywhere.com](http://angela1c.pythonanywhere.com).
+The application was briefly hosted on Python Anywhere using the premium services. 
+I initially used the free tier but upgraded the account to access the premium services as the number of datasets alone listed on the Irish open data portal exceeds 10,000. 
+This allowed me to get the application running and get all the database tables populated by calling the <https://data.gov.ie> APIs. 
 
 Because connection pooling has been set up to work with PythonAnywhere, when running the application locally, it is possible that you may need to restart the server if the connection pool gets exhausted. This can be restarted using `flask run`. 
 
 ---
 
-### About the Open Data portal at <https://data.gov.ie>:
+## About the Irish Open Data portal at <https://data.gov.ie>:
 Ireland's open data portal aims at promoting innovation and transparency through the publication of Irish Public Sector data in open, free and reusable formats. 
 
 Open data is information that is collected, produced or paid for by government bodies and made freely available for reuse. Almost all data that is not privacy sensitive can be published as open data with an open licence. The digital economy revolves around data. It can be used to help public administration work more efficiently and to improve the quality of their services. It also can be used by businesses to enhance their business models or to open new opportunities. Open data also provides information to citizens on matters that concern them such as local government, public services, public transport scheduling etc.
@@ -152,15 +157,17 @@ The api actions used for this web application are the `package_list`, `tag_list`
 
 ## Notes on further development.
 
-The application could be improved by using less HTML pages and having the ability to search for tags, package names and publishers on the same page so that the user can see the search terms that can be used to search for actual datasets URLS using the package_search api action. The webpage designs could be much better. This was my first time doing anything like this and I wanted to spend more time working on getting the application to do what I wanted it to do...
+The application could be improved by using less HTML pages and having the ability to search for tags, package names and publishers on the same page so that the user can see the search terms that can be used to search for actual datasets URLS using the `package_search` API action. The webpage designs could be much better. This was my first time doing anything like this and I wanted to spend more time working on getting the application to do what I wanted it to do.
 
 The `searchDAO` file could catch more data from the results key in the returned JSON data such as the theme and contact details. Additional details could be added to the database tables. Additional filters could be used on the tables displayed on the webpages.
 
-Additional python scripts to download data to csv and excel format are available in another repository as are scripts that use the other api action calls such as `package_show`, `tag_show`, `organization_show` and `resource_search`.
-The `package_show` action call could be used to get more details about the datasets and to cross reference with other tables using the package_id key. Likewise with the `organization_show` action to get more details about a publisher and `tag_show` to get more details about a tag.
-The `resource_search` api action call could also be incorporated into the web application. This also provides links to the dataset urls and might have better names and descriptions available than using the `package_search` api action.
+Additional Python scripts to download data to csv and excel format are available in another repository as are scripts that use the other API action calls such as `package_show`, `tag_show`, `organization_show` and `resource_search`.
 
-I hope to get the application working on PythonAnywhere.com at some stage in January.
+The `package_show` action call could be used to get more details about the datasets and to cross reference with other tables using the package_id key. Likewise with the `organization_show` action to get more details about a publisher and `tag_show` to get more details about a tag.
+The `resource_search` API action call could also be incorporated into the web application. This also provides links to the dataset URLs and might have better names and descriptions available than using the `package_search` API action.
+
+
+---
 
 ## References
 
